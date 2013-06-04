@@ -46,7 +46,8 @@ from . import (
   scrollkeeper,
   shebangdepends,
   sodepends,
-  symlink
+  symlink,
+  unusedsodepends
 )
 
 # PKGBUILD and metadata rules

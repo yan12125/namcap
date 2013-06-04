@@ -74,6 +74,7 @@ specific-host-type-used %s :: Reference to %s should be changed to $CARCH
 specific-sourceforge-mirror :: Attempting to use specific sourceforge mirror, use downloads.sourceforge.net instead
 symlink-found %s points to %s :: Symlink (%s) found that points to %s
 too-many-checksums %s %i needed :: Too many %s: %i needed
+unused-sodepend %s %s :: Unused shared library '%s' by file ('%s')
 use-pkgdir :: Use $pkgdir instead of $startdir/pkg
 use-srcdir :: Use $srcdir instead of $startdir/src
 using-dl-sourceforge :: Attempting to use dl sourceforge domain, use downloads.sourceforge.net instead
