@@ -17,7 +17,7 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # 
 
-import os
+import os, re
 import tarfile
 from Namcap.ruleclass import *
 
@@ -39,6 +39,17 @@ class FHSRule(TarballRule):
 				'run/', 'var/run/',
 				'var/lock/'
 		]
+		custom_valid = {
+			'^mingw-': ['usr/x86_64-w64-mingw32/lib/',
+			            'usr/x86_64-w64-mingw32/bin/',
+						'usr/x86_64-w64-mingw32/include/',
+						'usr/i686-w64-mingw32/lib/',
+						'usr/i686-w64-mingw32/bin/',
+						'usr/i686-w64-mingw32/include/'],
+			}
+		for pattern in custom_valid:
+			if re.search(pattern, pkginfo['name']):
+				valid_paths.extend(custom_valid[pattern])
 		for entry in tar.getmembers():
 			name = os.path.normpath(entry.name)
 			if entry.isdir():
@@ -48,16 +59,15 @@ class FHSRule(TarballRule):
 			# catched by emptydirs rule
 			if name in forbidden_paths:
 				continue
-			bad_dirs = [dirname for dirname in forbidden_paths
-					if name.startswith(dirname)]
-			if len(bad_dirs) > 0:
+			bad_dirs = (name.startswith(dirname) for dirname in forbidden_paths)
+			if any(bad_dirs):
 				self.errors.append(('file-in-temporary-dir %s',	name))
 				continue
 
 			# matches directory names or parent directories
-			good_dirs = [dirname for dirname in valid_paths
-				if name.startswith(dirname) or dirname.startswith(name)]
-			if len(good_dirs) == 0:
+			good_dirs = (name.startswith(dirname) or dirname.startswith(name)
+				for dirname in valid_paths)
+			if not any(good_dirs):
 				self.warnings.append(("file-in-non-standard-dir %s", name))
 
 class FHSManpagesRule(TarballRule):

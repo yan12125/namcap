@@ -47,6 +47,14 @@ def getcovered(dependlist, covereddepend = None):
 
 	return covereddepend
 
+def getcustom(pkginfo):
+	custom_name = {'^mingw-': ['mingw-w64-crt'],}
+	custom_depend = set()
+	for pattern in custom_name:
+		if re.search(pattern, pkginfo['name']):
+			custom_depend.update(custom_name[pattern])
+	return custom_depend
+
 def getprovides(depends, provides):
 	for i in depends:
 		pac = package.load_from_db(i)
@@ -62,9 +70,10 @@ def analyze_depends(pkginfo):
 	# compute needed dependencies + recursive
 	dependlist = set(pkginfo.detected_deps.keys())
 	indirectdependlist = getcovered(dependlist)
+	customlist = getcustom(pkginfo)
 	for i in indirectdependlist:
 		infos.append(("dependency-covered-by-link-dependence %s", i))
-	needed_depend = dependlist | indirectdependlist
+	needed_depend = dependlist | indirectdependlist | customlist
 	# the minimal set of needed dependencies
 	smartdepend = set(dependlist) - indirectdependlist
 

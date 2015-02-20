@@ -21,7 +21,7 @@
 Check for ELF files to see if a package should be 'any' architecture
 """
 
-import os
+import os, re
 from Namcap.util import is_elf, clean_filename
 from Namcap.ruleclass import *
 
@@ -29,6 +29,9 @@ class package(TarballRule):
 	name = "anyelf"
 	description = "Check for ELF files to see if a package should be 'any' architecture"
 	def analyze(self, pkginfo, tar):
+		supress_name = ['^mingw-']
+		if any(re.search(s, pkginfo['name']) for s in supress_name):
+			return
 		found_elffiles = []
 
 		for entry in tar.getmembers():
