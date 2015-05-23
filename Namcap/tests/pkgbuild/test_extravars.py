@@ -78,6 +78,7 @@ glibc=2.12
 optdepends=('gtk2')
 options=('!libtool')
 source=(ftp://ftp.example.com/pub/mypackage-0.1.tar.gz)
+validpgpkeys=('D7EDD665AB6F255E2EB9BA2702FA998FBAD6674A')
 md5sums=('abcdefabcdef12345678901234567890')
 
 build() {
