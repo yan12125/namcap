@@ -21,7 +21,7 @@ Minimal examples (very simple packages forged to exhibit unexpected
 behaviour from namcap) are also welcome to extend namcap's test suite.
 
 If you've a patch (fixing a bug or a new namcap module), then you can send it 
-to the arch-general mailing list. Namcap development is managed with git, so 
+to the arch-projects mailing list. Namcap development is managed with git, so
 git-formatted patches are preferred. 
 
 Namcap's source is available on:
