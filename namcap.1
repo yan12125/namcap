@@ -16,13 +16,16 @@ Do not run RULELIST rules on the package
 .B "\-i, \-\-info"
 display information messages
 .TP
+.B "\-L, \-\-list
+return a list of valid rules and their descriptions
+.TP
 .B "\-m, \-\-machine\-readable"
 displays easily parseable namcap tags instead of the normal human readable description; for example using non-fhs-man-page instead of "Non-FHS man page (%s) found. Use /usr/share/man instead". A full list of namcap tags along with their human readable descriptions can be found at /usr/share/namcap/tags.
 .TP
 \fB\-r\fR RULELIST, \fB\-\-rules=\fRRULELIST
 only apply RULELIST rules to the package
 .IP
-RULELIST is a comma-separated list of rule names; if RULELIST=list then namcap returns a list of valid rules and their descriptions
+RULELIST is a comma-separated list of rule names
 .SH RULES
 .TP
 .B arrays
@@ -133,7 +136,7 @@ apply the depends and symlink rules to foo.pkg.tar.gz
 .B namcap PKGBUILD
 apply all PKGBUILD based rules to the file PKGBUILD
 .TP
-.B namcap -r list
+.B namcap --list
 list all of the available rules
 .SH COPYRIGHT
 Copyright \(co 2003-2009 Jason Chu
