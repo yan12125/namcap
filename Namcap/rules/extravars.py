@@ -18,6 +18,7 @@
 # 
 
 import re
+from itertools import product
 from Namcap.ruleclass import *
 
 class package(PkgbuildRule):
@@ -30,8 +31,11 @@ class package(PkgbuildRule):
 				 'sha256sums', 'sha384sums', 'sha512sums', 'pkgname',
 				 'pkgbase', 'pkgver', 'pkgrel', 'epoch', 'pkgdesc', 'groups',
 				 'url', 'install', 'changelog',
-				 'options', 'optdepends', 'checkdepends', 'validpgpkeys',
-				 'depends_i686', 'depends_x86_64']
+				 'options', 'optdepends', 'checkdepends', 'validpgpkeys']
+		carch_vars = ['checkdepends', 'conflicts', 'depends',
+				 'makedepends', 'optdepends', 'provides', 'replaces', 'source']
+		if 'arch' in pkginfo and len(pkginfo["arch"]) >= 2:
+			stdvars.extend(v+'_'+a for v,a in product(carch_vars, pkginfo["arch"]))
 		for varname in pkginfo["setvars"]:
 			if varname.islower() and varname not in stdvars \
 					and not varname.startswith('_'):
