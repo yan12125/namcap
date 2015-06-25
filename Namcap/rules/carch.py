@@ -34,7 +34,14 @@ class package(PkgbuildRule):
 			# strip any comments
 			line = line.split('#')[0]
 			match = archmatch.search(line)
-			if match and not archline.match(line) and not '$CARCH' in line:
-				self.warnings.append(("specific-host-type-used %s", match.group(1)))
+			if not match:
+				continue
+			if archline.match(line):
+				continue
+			if '$CARCH' in line:
+				continue
+			if '${CARCH}' in line:
+				continue
+			self.warnings.append(("specific-host-type-used %s", match.group(1)))
 
 # vim: set ts=4 sw=4 noet:
