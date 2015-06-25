@@ -75,6 +75,8 @@ depends=('glibc')
 depends+=('glib2'
 glibc=2.12
 )
+depends_i686=('zlib')
+depends_x86_64=('lib32-zlib')
 optdepends=('gtk2')
 options=('!libtool')
 source=(ftp://ftp.example.com/pub/mypackage-0.1.tar.gz)
