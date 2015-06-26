@@ -29,23 +29,25 @@ from Namcap.ruleclass import *
 import Namcap.tags
 from Namcap import package
 
-def getcovered(dependlist, covereddepend = None):
+def getcovered(dependlist):
 	"""
-	Fills covereddepend with the full dependency tree
-	of dependlist (iterable of package names)
+	Returns full coverage tree set, without packages
+	from dependlist (iterable of package names)
 	"""
-	if covereddepend is None:
-		covereddepend = set()
-
-	for i in dependlist:
+	covered = set()
+	given = set(dependlist)
+	todo = list(given)
+	while todo:
+		i = todo.pop()
+		if i in covered:
+			continue
+		covered.add(i)
 		pac = package.load_from_db(i)
-		if pac != None and "depends" in pac:
-			newdeps = [j for j in pac["depends"]
-					if j != None and j not in covereddepend]
-			covereddepend.update(newdeps)
-			getcovered(newdeps, covereddepend)
+		if pac is None:
+			continue
+		todo.extend(pac["depends"])
 
-	return covereddepend
+	return covered - given
 
 def getcustom(pkginfo):
 	custom_name = {'^mingw-': ['mingw-w64-crt'],}
@@ -55,14 +57,17 @@ def getcustom(pkginfo):
 			custom_depend.update(custom_name[pattern])
 	return custom_depend
 
-def getprovides(depends, provides):
+def getprovides(depends):
+	provides = {}
 	for i in depends:
+		provides[i] = []
 		pac = package.load_from_db(i)
-
-		if pac != None and "provides" in pac and pac["provides"] != None and len(pac["provides"]) > 0:
-			provides[i] = pac["provides"]
-		else:
-			provides[i] = []
+		if pac is None:
+			continue
+		if not pac["provides"]:
+			continue
+		provides[i] = pac["provides"]
+	return provides
 
 def analyze_depends(pkginfo):
 	errors, warnings, infos = [], [], []
@@ -90,8 +95,7 @@ def analyze_depends(pkginfo):
 
 	# Get the provides so we can reference them later
 	# smartprovides : depend => (packages provided by depend)
-	smartprovides = {}
-	getprovides(smartdepend, smartprovides)
+	smartprovides = getprovides(smartdepend)
 
 	# The set of all provides for detected dependencies
 	allprovides = set()

@@ -48,4 +48,14 @@ class DependsTests(unittest.TestCase):
 		self.assertEqual(i,
 				[('depends-by-namcap-sight depends=(%s)', '')])
 
+	def test_satisfied(self):
+		self.pkginfo["depends"] = {"readline": []}
+		self.pkginfo.detected_deps = {"glibc": [], "readline": []}
+		e, w, i = Namcap.depends.analyze_depends(self.pkginfo)
+		self.assertEqual(e, [])
+		# failure: w == [('dependency-already-satisfied %s', 'readline')]
+		self.assertEqual(w, [])
+		# info is verbose and beyond scope, skip it
+
+
 # vim: set ts=4 sw=4 noet:
