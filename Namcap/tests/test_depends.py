@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# namcap tests - tests fro the depends module
+# namcap tests - tests for the depends module
 # Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
 # 
 #   This program is free software; you can redistribute it and/or modify
@@ -49,13 +49,23 @@ class DependsTests(unittest.TestCase):
 				[('depends-by-namcap-sight depends=(%s)', '')])
 
 	def test_satisfied(self):
+		# false positive test
 		self.pkginfo["depends"] = {"readline": []}
 		self.pkginfo.detected_deps = {"glibc": [], "readline": []}
 		e, w, i = Namcap.depends.analyze_depends(self.pkginfo)
+		unexpected_w = [('dependency-already-satisfied %s', 'readline')]
 		self.assertEqual(e, [])
-		# failure: w == [('dependency-already-satisfied %s', 'readline')]
 		self.assertEqual(w, [])
 		# info is verbose and beyond scope, skip it
 
+	def test_satisfied2(self):
+		# false negative test
+		self.pkginfo["depends"] = {"pyalpm": [], "python": []}
+		self.pkginfo.detected_deps = {"pyalpm": [], "python": []}
+		e, w, i = Namcap.depends.analyze_depends(self.pkginfo)
+		expected_w = [('dependency-already-satisfied %s', 'python')]
+		self.assertEqual(e, [])
+		self.assertEqual(w, expected_w)
+		# info is verbose and beyond scope, skip it
 
 # vim: set ts=4 sw=4 noet:

@@ -29,25 +29,30 @@ from Namcap.ruleclass import *
 import Namcap.tags
 from Namcap import package
 
-def getcovered(dependlist):
-	"""
-	Returns full coverage tree set, without packages
-	from dependlist (iterable of package names)
-	"""
+def single_covered(depend):
+	"Returns full coverage tree of one package, with loops broken"
 	covered = set()
-	given = set(dependlist)
-	todo = list(given)
+	todo = set([depend])
 	while todo:
 		i = todo.pop()
-		if i in covered:
-			continue
 		covered.add(i)
 		pac = package.load_from_db(i)
 		if pac is None:
 			continue
-		todo.extend(pac["depends"])
+		todo |= set(pac["depends"]) - covered
 
-	return covered - given
+	return covered - set([depend])
+
+def getcovered(dependlist):
+	"""
+	Returns full coverage tree set, without packages
+	from self-loops (iterable of package names)
+	"""
+
+	covered = set()
+	for d in dependlist:
+		covered |= single_covered(d)
+	return covered
 
 def getcustom(pkginfo):
 	custom_name = {'^mingw-': ['mingw-w64-crt'],}
