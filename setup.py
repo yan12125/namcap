@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
+import Namcap.version
 
 DATAFILES = [('/usr/share/man/man1', ['namcap.1']),
 		('/usr/share/namcap', ['namcap-tags', 'parsepkgbuild.sh']),
 		('/usr/share/doc/namcap',['README','AUTHORS','TODO'])]
 
 setup(name="namcap",
-	version="3.2.6",
+	version=Namcap.version.get_version(),
 
 	description="Pacman package analyzer",
 	author="Arch Dev Team",
