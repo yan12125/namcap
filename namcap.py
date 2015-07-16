@@ -31,6 +31,7 @@ import types
 
 import Namcap.depends
 import Namcap.tags
+import Namcap.version
 
 # Functions
 def get_modules():
@@ -49,6 +50,7 @@ def usage():
 	print("    -e rulelist, --exclude=rulelist  : don't apply RULELIST rules to the package")
 	print("    -r rulelist, --rules=rulelist    : only apply RULELIST rules to the package")
 	print("    -t tags                          : use a custom tag file")
+	print("    -v version                       : print version and exit")
 
 	sys.exit(2)
 
@@ -171,9 +173,9 @@ filename = None
 
 # get our options and process them
 try:
-	optlist, args = getopt.getopt(sys.argv[1:], "ihmr:e:t:L",
+	optlist, args = getopt.getopt(sys.argv[1:], "ihmr:e:t:Lv",
 			["info", "help", "machine-readable", "rules=",
-				"exclude=", "tags=", "list"])
+				"exclude=", "tags=", "list", "version"])
 except getopt.GetoptError:
 	usage()
 
@@ -221,6 +223,10 @@ for i, k in optlist:
 
 	if i in ('-t', '--tags'):
 		filename = k
+
+	if i in ('-v', '--version'):
+		print(Namcap.version.get_version())
+		sys.exit(0)
 
 # If there are no args, print usage
 if (args == []):
