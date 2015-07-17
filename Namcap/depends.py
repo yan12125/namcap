@@ -134,6 +134,9 @@ def analyze_depends(pkginfo):
 		errors.append(("dependency-detected-not-included %s (%s)", (i, reason)))
 
 	for i in pkginfo["depends"]:
+		# multilib packages usually depend on their regular counterparts
+		if pkginfo["name"].startswith('lib32-') and i == pkginfo["name"].partition('-')[2]:
+			continue
 		# a needed dependency is superfluous it is implicitly satisfied
 		if i in implicitdepend and (i in smartdepend or i in indirectdependlist):
 			warnings.append(("dependency-already-satisfied %s", i))
