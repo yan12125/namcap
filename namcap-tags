@@ -76,6 +76,7 @@ site-ruby :: Found usr/lib/ruby/site_ruby in package, usr/lib/ruby/vendor_ruby s
 specific-host-type-used %s :: Reference to %s should be changed to $CARCH
 specific-sourceforge-mirror :: Attempting to use specific sourceforge mirror, use downloads.sourceforge.net instead
 symlink-found %s points to %s :: Symlink (%s) found that points to %s
+systemd-location %s :: File %s should be in /usr/lib/systemd/system/
 too-many-checksums %s %i needed :: Too many %s: %i needed
 unused-sodepend %s %s :: Unused shared library '%s' by file ('%s')
 use-pkgdir :: Use $pkgdir instead of $startdir/pkg

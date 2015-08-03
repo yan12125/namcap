@@ -48,6 +48,7 @@ from . import (
   shebangdepends,
   sodepends,
   symlink,
+  systemdlocation,
   unusedsodepends
 )
 
