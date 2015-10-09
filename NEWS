@@ -1,3 +1,10 @@
+namcap (3.2.6)
+	- better mingw support (FS#43552)
+	- lrz/lzo compression (FS#44900)
+	- handle validpgpkeys warnings
+	- improved carch-specific depends (FS#45455, FS#45456)
+	- test for overlinking
+
 namcap (3.2.5)
 	- support "SKIP" in checksums (FS#34647)
 	- export CARCH correctly to parsepkgbuild (FS#32568)
