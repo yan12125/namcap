@@ -25,15 +25,13 @@ class package(PkgbuildRule):
 	name = "extravars"
 	description = "Verifies that extra variables start with an underscore"
 	def analyze(self, pkginfo, tar):
-		stdvars = ['arch', 'license', 'depends', 'makedepends',
-				 'provides', 'conflicts' , 'replaces', 'backup',
-				 'source', 'noextract', 'md5sums', 'sha1sums',
-				 'sha256sums', 'sha384sums', 'sha512sums', 'pkgname',
+		carch_vars = ['checkdepends', 'conflicts', 'depends', 'makedepends',
+		         'optdepends', 'provides', 'replaces', 'source', 'md5sums',
+				 'sha1sums', 'sha256sums', 'sha384sums', 'sha512sums']
+		stdvars = ['arch', 'license', 'backup', 'noextract', 'pkgname',
 				 'pkgbase', 'pkgver', 'pkgrel', 'epoch', 'pkgdesc', 'groups',
 				 'url', 'install', 'changelog',
-				 'options', 'optdepends', 'checkdepends', 'validpgpkeys']
-		carch_vars = ['checkdepends', 'conflicts', 'depends',
-				 'makedepends', 'optdepends', 'provides', 'replaces', 'source']
+				 'options', 'validpgpkeys'] + carch_vars
 		if 'arch' in pkginfo and len(pkginfo["arch"]) >= 2:
 			stdvars.extend(v+'_'+a for v,a in product(carch_vars, pkginfo["arch"]))
 		for varname in pkginfo["setvars"]:
