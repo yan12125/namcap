@@ -24,6 +24,7 @@ import sys
 import subprocess
 import re
 import collections
+import gzip
 
 import pyalpm
 _pyalpm_version_tuple = tuple(int(n) for n in pyalpm.version().split('.'))
@@ -260,5 +261,32 @@ def lookup_provider(pkgname, db):
 	for pkg in db.pkgcache:
 		if pkgname in pkg.provides:
 			return pkg
+
+def mtree_line(line):
+	"returns head, {key:value}"
+	# todo, un-hex the escaped chars
+	head,_,kvs = line.partition(' ')
+	kvs = dict(kv.split('=') for kv in kvs.split(' '))
+	return head, kvs
+
+def load_mtree(tar):
+	"takes a tar object, returns (path, {attributes})"
+	if '.MTREE' not in tar.getnames():
+		raise StopIteration
+	zfile = tar.extractfile('.MTREE')
+	text = gzip.open(zfile).read().decode("utf-8")
+	defaults = {}
+	for line in text.split('\n'):
+		if not line:
+			continue
+		if line.startswith('#'):
+			continue
+		head, kvs = mtree_line(line)
+		if head == '/set':
+			defaults = kvs
+		attr = {}
+		attr.update(defaults)
+		attr.update(kvs)
+		yield head, attr
 
 # vim: set ts=4 sw=4 noet:
