@@ -32,7 +32,7 @@ class FHSRule(TarballRule):
 				'usr/sbin/', 'usr/share/',
 				'var/cache/', 'var/lib/', 'var/log/', 'var/opt/',
 				'var/spool/', 'var/state/',
-				'.PKGINFO', '.INSTALL', '.CHANGELOG', '.MTREE',
+				'.PKGINFO', '.INSTALL', '.CHANGELOG', '.MTREE', '.BUILDINFO',
 		]
 		forbidden_paths = [
 				'tmp/', 'var/tmp/',
