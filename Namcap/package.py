@@ -79,7 +79,7 @@ class PacmanPackage(collections.MutableMapping):
 		# Usual attributes
 		self.is_split = False
 		# a dictionary { package => [reasons why it is needed] }
-		self.detected_deps = {}
+		self.detected_deps = collections.defaultdict(list)
 		self._data = {}
 
 		# Init from a dictionary

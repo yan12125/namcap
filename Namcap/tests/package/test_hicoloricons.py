@@ -22,7 +22,7 @@
 import os
 from Namcap.tests.makepkg import MakepkgTest
 import Namcap.depends
-import Namcap.rules.hicoloricons
+import Namcap.rules.pathdepends
 
 class HiColorIconsTest(MakepkgTest):
 	pkgbuild = """
@@ -50,7 +50,7 @@ package() {
 		self.run_makepkg()
 		pkg, r = self.run_rule_on_tarball(
 				os.path.join(self.tmpdir, pkgfile),
-				Namcap.rules.hicoloricons.package
+				Namcap.rules.pathdepends.PathDependsRule
 				)
 		e, w, i = Namcap.depends.analyze_depends(pkg)
 		self.assertEqual(pkg.detected_deps, {
@@ -92,7 +92,7 @@ package() {
 		self.run_makepkg()
 		pkg, r = self.run_rule_on_tarball(
 				os.path.join(self.tmpdir, pkgfile),
-				Namcap.rules.hicoloricons.package
+				Namcap.rules.pathdepends.PathDependsRule
 				)
 		e, w, i = Namcap.depends.analyze_depends(pkg)
 		self.assertEqual(pkg.detected_deps, {

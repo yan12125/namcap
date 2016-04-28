@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
 # 
-# namcap rules - glibfiles
+# namcap rules - mimefiles
+# Copyright (C) 2009 Hugo Doria <hugo@archlinux.org>
 # Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
 # 
 #   This program is free software; you can redistribute it and/or modify
@@ -21,15 +21,21 @@
 import os
 from Namcap.ruleclass import *
 
-class GlibSchemasRule(TarballRule):
-	name = "glibschemas"
-	description = "Check for dconf schemas dependency"
+class MimeDesktopRule(TarballRule):
+	name = "mimedesktop"
+	description = "Check for MIME desktop file depends"
 	def analyze(self, pkginfo, tar):
 		for entry in tar:
-			if ('usr/share/glib-2.0/schemas' in entry.name
-					and os.path.basename(entry.name).endswith(".gschema.xml")):
-				reasons = pkginfo.detected_deps.setdefault("dconf", [])
-				reasons.append( ('dconf-needed-for-glib-schemas',()) )
+			if entry.issym():
+				continue
+			if not entry.name.startswith("usr/share/applications"):
+				continue
+			if not entry.name.endswith(".desktop"):
+				continue
+			with tar.extractfile(entry) as f:
+				if not any(l.startswith(b"MimeType=") for l in f):
+					continue
+				pkginfo.detected_deps["desktop-file-utils"].append( ('desktop-file-utils-needed', ()) )
 				break
 
 # vim: set ts=4 sw=4 noet:
