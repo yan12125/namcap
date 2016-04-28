@@ -22,6 +22,8 @@ elffile-with-textrel %s :: ELF file ('%s') has text relocations.
 elffile-with-execstack %s :: ELF file ('%s') has executable stack.
 empty-directory %s :: Directory (%s) is empty
 error-running-rule %s :: Error running rule '%s'
+external-hooks-name %s :: .INSTALL file runs a command (%s) provided by hooks.
+external-hooks-warning :: .INSTALL file runs a command provided by hooks.
 extra-var-begins-without-underscore %s :: Non standard variable '%s' doesn't start with an underscore
 file-in-non-standard-dir %s :: File (%s) exists in a non-standard directory.
 file-in-temporary-dir %s :: File (%s) is in a temporary directory.

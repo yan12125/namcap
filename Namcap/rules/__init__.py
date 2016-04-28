@@ -25,6 +25,7 @@ from . import (
   anyelf,
   elffiles,
   emptydir,
+  externalhooks,
   fhs,
   filenames,
   fileownership,
