@@ -120,7 +120,7 @@ class package(TarballRule):
 		tar_status = _try_tar(tar)
 		if mtree_status == False and tar_status:
 			# mtree only
-			self.warning = [('py-mtime-mtree-warning', ())]
+			self.warnings = [('py-mtime-mtree-warning', ())]
 		elif not tar_status:
 			# tar or both
 			self.errors = [('py-mtime-tar-error', ())]
