@@ -1,3 +1,10 @@
+namcap (3.2.7)
+	- improved carch depends (FS#47862)
+	- better multilib dependencies
+	- detects bad py/pyc/pyo mtimes
+	- detects when an install file shouldn't be used
+	- removed old install file rules
+
 namcap (3.2.6)
 	- better mingw support (FS#43552)
 	- lrz/lzo compression (FS#44900)
