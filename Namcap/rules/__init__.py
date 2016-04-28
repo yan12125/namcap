@@ -39,7 +39,6 @@ from . import (
   libtool,
   licensepkg,
   lotsofdocs,
-  mimefiles,
   missingbackups,
   perllocal,
   permissions,

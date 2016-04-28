@@ -13,7 +13,6 @@ backups-preceding-slashes :: Backup entries should not have preceding slashes
 cross-dir-hardlink %s %s :: Cross-directory hardlink in package (%s, %s)
 dangling-hardlink %s points to %s :: Hard link (%s) points to non-existing %s
 dangling-symlink %s points to %s :: Symlink (%s) points to non-existing %s
-dconf-schemas-not-compiled :: Files in /usr/share/glib-2.0/schemas but no call for glib-compile-schemas in install file
 desktop-database-not-updated :: Mime type handler found. Add "update-desktop-database -q" to the install file
 directory-not-world-executable %s :: Directory (%s) does not have the world executable bit set.
 elffile-in-any-package %s :: ELF file ('%s') found in an 'any' package.
@@ -31,23 +30,19 @@ file-not-world-readable %s :: File (%s) does not have the world readable bit set
 file-referred-in-startdir :: File referenced in $startdir
 file-setugid %s :: File (%s) is setuid or setgid.
 file-world-writable %s :: File (%s) has the world writable bit set.
-gio-modules-not-registered :: Package installs GIO modules but does not register them with gio-querymodules in install script.
 gnome-mime-file %s :: File (%s) is an auto-generated GNOME mime file
 hardlink-found %s points to %s :: Hard link (%s) found that points to %s
-hicolor-icon-cache-not-updated :: Files in /usr/share/icons/hicolor but no call to gtk-update-icon-cache or xdg-icon-resource to update the icon cache
 kdebase-runtime-needed-dep %s :: KDE programs %s probably need kdebase-runtime to run correctly
 improper-checksum %s %s :: Improper %s: '%s'
 incorrect-library-permissions %s :: Library (%s) does not have permission set to 644 or 444
 incorrect-owner %s (%s:%s) :: File (%s) is owned by %s:%s
 invalid-filename :: File name %s contains non standard characters
 info-dir-file-present %s :: Info directory file (%s) should not be present
-info-dir-not-updated :: Info files detected but not updated with "install-info" in install file
 insecure-rpath %s %s :: Insecure RPATH '%s' in file ('%s')
 libtool-file-present %s :: File (%s) is a libtool file
 library-no-package-associated %s :: Referenced library '%s' is an uninstalled dependency
 link-level-dependence %s in %s :: Link-level dependence (%s) in file %s
 lots-of-docs %f :: Package was %.0f%% docs by size; maybe you should split out a docs package
-mime-cache-not-updated :: Mime-file found. Add "update-mime-database usr/share/mime" to the install file
 missing-backup-file %s :: File in backup array (%s) not found in package
 missing-description :: Missing description in PKGBUILD
 missing-contributor :: Missing Contributor tag
@@ -99,8 +94,6 @@ depends-by-namcap-sight depends=(%s) :: Depends as namcap sees them: depends=(%s
 dconf-needed-for-glib-schemas :: needed for glib schemas
 glib2-needed-for-gio-modules :: needed for GIO modules
 hicolor-icon-theme-needed-for-hicolor-dir :: needed for hicolor theme hierarchy
-shared-mime-info-needed :: needed for update-mime-database
-desktop-file-utils-needed :: needed for update-desktop-database
 kdebase-runtime-needed %s :: needed for programs %s
 java-environment-needed %s :: found class files %s
 libraries-needed %s %s :: libraries %s needed in files %s

@@ -23,44 +23,13 @@ from Namcap.ruleclass import *
 
 class GlibSchemasRule(TarballRule):
 	name = "glibschemas"
-	description = "Check that dconf schemas are compiled"
+	description = "Check for dconf schemas dependency"
 	def analyze(self, pkginfo, tar):
-		flag = False
-		ok = False
 		for entry in tar:
 			if ('usr/share/glib-2.0/schemas' in entry.name
-					and os.path.basename(entry.name).endswith(".gschema.xml")
-					and not flag):
-				flag = True
+					and os.path.basename(entry.name).endswith(".gschema.xml")):
 				reasons = pkginfo.detected_deps.setdefault("dconf", [])
 				reasons.append( ('dconf-needed-for-glib-schemas',()) )
-			if ".INSTALL" in entry.name:
-				f = tar.extractfile(".INSTALL")
-				if b"glib-compile-schemas" in f.read():
-					ok = True
-				f.close()
-		if flag and not ok:
-			self.warnings.append(("dconf-schemas-not-compiled", ()))
-
-class GioModulesRule(TarballRule):
-	name = "giomodules"
-	description = "Check that GIO modules are registered"
-	def analyze(self, pkginfo, tar):
-		flag = False
-		ok = False
-		for entry in tar:
-			if ('usr/lib/gio/modules' in entry.name
-					and os.path.basename(entry.name) not in ('', 'modules')
-					and not flag):
-				flag = True
-				reasons = pkginfo.detected_deps.setdefault("glib2", [])
-				reasons.append( ('glib2-needed-for-gio-modules',()) )
-			if ".INSTALL" in entry.name:
-				f = tar.extractfile(".INSTALL")
-				if b"gio-querymodules" in f.read():
-					ok = True
-				f.close()
-		if flag and not ok:
-			self.warnings.append(("gio-modules-not-registered", ()))
+				break
 
 # vim: set ts=4 sw=4 noet:

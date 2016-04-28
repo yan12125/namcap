@@ -21,18 +21,10 @@ from Namcap.ruleclass import *
 
 class package(TarballRule):
 	name = "hicoloricons"
-	description = "Checks whether the hicolor icon cache is updated."
+	description = "Checks for hicolor path dependency"
 	def analyze(self, pkginfo, tar):
 		if "usr/share/icons/hicolor" in tar.getnames():
 			reasons = pkginfo.detected_deps.setdefault("hicolor-icon-theme", [])
 			reasons.append( ('hicolor-icon-theme-needed-for-hicolor-dir',()) )
-
-			if ".INSTALL" not in tar.getnames():
-				self.errors.append(("hicolor-icon-cache-not-updated", ()))
-			else:
-				f = tar.extractfile(".INSTALL")
-				install_script = f.read().decode("utf-8", "ignore")
-				if ("gtk-update-icon-cache" not in install_script) and ("xdg-icon-resource" not in install_script):
-					self.errors.append(("hicolor-icon-cache-not-updated", ()))
 
 # vim: set ts=4 sw=4 noet:

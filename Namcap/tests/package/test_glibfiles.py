@@ -59,23 +59,7 @@ package() {
 				{'dconf': [('dconf-needed-for-glib-schemas', ())] }
 				)
 		self.assertEqual(r.errors, [])
-		self.assertEqual(r.warnings, [("dconf-schemas-not-compiled", ())])
-		self.assertEqual(r.infos, [])
-
-	def test_gio_modules_exists(self):
-		pkgfile = "__namcap_test_glibfiles-1.0-1-%(arch)s.pkg.tar" % { "arch": self.arch }
-		with open(os.path.join(self.tmpdir, "PKGBUILD"), "w") as f:
-			f.write(self.pkgbuild)
-		self.run_makepkg()
-		pkg, r = self.run_rule_on_tarball(
-				os.path.join(self.tmpdir, pkgfile),
-				Namcap.rules.glibfiles.GioModulesRule
-				)
-		self.assertEqual(pkg.detected_deps,
-				{'glib2': [('glib2-needed-for-gio-modules', ())] }
-				)
-		self.assertEqual(r.errors, [])
-		self.assertEqual(r.warnings, [("gio-modules-not-registered", ())])
+		self.assertEqual(r.warnings, [])
 		self.assertEqual(r.infos, [])
 
 # vim: set ts=4 sw=4 noet:

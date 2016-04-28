@@ -60,7 +60,6 @@ package() {
 			('dependency-detected-not-included %s (%s)',
 			 ('hicolor-icon-theme', 'needed for hicolor theme hierarchy')
 			),
-			("hicolor-icon-cache-not-updated", ())
 		]))
 		self.assertEqual(r.warnings + w, [])
 		self.assertEqual(r.infos + i, [
@@ -100,7 +99,6 @@ package() {
 			"hicolor-icon-theme": [('hicolor-icon-theme-needed-for-hicolor-dir',())]
 			})
 		self.assertEqual(r.errors + e, [
-			("hicolor-icon-cache-not-updated", ())
 			])
 		self.assertEqual(r.warnings + w, [])
 		self.assertEqual(r.infos + i, [
