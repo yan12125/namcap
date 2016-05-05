@@ -29,6 +29,11 @@ from Namcap.ruleclass import *
 import Namcap.tags
 from Namcap import package
 
+# manual overrides for relationships outside the normal metadata
+implicit_provides = {
+	'java-environment': ['java-runtime'],
+}
+
 def single_covered(depend):
 	"Returns full coverage tree of one package, with loops broken"
 	covered = set()
@@ -65,13 +70,15 @@ def getcustom(pkginfo):
 def getprovides(depends):
 	provides = {}
 	for i in depends:
-		provides[i] = []
+		provides[i] = set()
+		if i in implicit_provides:
+			provides[i].update(implicit_provides[i])
 		pac = package.load_from_db(i)
 		if pac is None:
 			continue
 		if not pac["provides"]:
 			continue
-		provides[i] = pac["provides"]
+		provides[i].update(pac["provides"])
 	return provides
 
 def analyze_depends(pkginfo):
@@ -100,12 +107,12 @@ def analyze_depends(pkginfo):
 
 	# Get the provides so we can reference them later
 	# smartprovides : depend => (packages provided by depend)
-	smartprovides = getprovides(smartdepend)
+	smartprovides = getprovides(smartdepend | explicitdepend)
 
 	# The set of all provides for detected dependencies
 	allprovides = set()
 	for plist in smartprovides.values():
-		allprovides |= set(plist)
+		allprovides |= plist
 
 	# Do the actual message outputting stuff
 	for i in smartdepend:
@@ -116,7 +123,10 @@ def analyze_depends(pkginfo):
 		if i in pkgbuild_depend:
 			continue
 		# if the dependency is pulled as a provider for some explicit dep
-		if len(set(smartprovides[i]) & pkgbuild_depend) > 0:
+		if smartprovides[i] & pkgbuild_depend:
+			continue
+		# the dependency is satisfied by a provides
+		if i in allprovides:
 			continue
 		# compute dependency reason
 		reasons = pkginfo.detected_deps[i]
@@ -127,7 +137,7 @@ def analyze_depends(pkginfo):
 			warnings.append(("dependency-detected-but-optional %s (%s)", (i, reason)))
 			continue
 		# maybe, it is pulled as a provider for an optdepend
-		if len(set(smartprovides[i]) & optdepend) > 0:
+		if smartprovides[i] & optdepend:
 			warnings.append(("dependency-detected-but-optional %s (%s)", (i, reason)))
 			continue
 		# now i'm pretty sure i didn't find it.
@@ -136,6 +146,9 @@ def analyze_depends(pkginfo):
 	for i in pkginfo["depends"]:
 		# multilib packages usually depend on their regular counterparts
 		if pkginfo["name"].startswith('lib32-') and i == pkginfo["name"].partition('-')[2]:
+			continue
+		# the package provides an important dependency
+		if i in smartprovides and (smartprovides[i] & smartdepend):
 			continue
 		# a needed dependency is superfluous it is implicitly satisfied
 		if i in implicitdepend and (i in smartdepend or i in indirectdependlist):

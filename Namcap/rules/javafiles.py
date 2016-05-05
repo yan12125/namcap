@@ -43,7 +43,7 @@ class JavaFiles(TarballRule):
 				#self.infos.append( ('java-class-file-found %s', entry.name) )
 			f.close()
 		if len(javas) > 0:
-			reasons = pkginfo.detected_deps.setdefault('java-environment', [])
-			reasons.append( ('java-environment-needed %s', ', '.join(javas)) )
+			reasons = pkginfo.detected_deps.setdefault('java-runtime', [])
+			reasons.append( ('java-runtime-needed %s', ', '.join(javas)) )
 
 # vim: set ts=4 sw=4 noet:
