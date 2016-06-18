@@ -24,7 +24,7 @@
 import re
 import os
 import tempfile
-import subprocess
+import shutil
 import pyalpm
 import Namcap.package
 from Namcap.util import script_type
@@ -37,6 +37,7 @@ def scanshebangs(fileobj, filename, scripts):
 	Stores
 	  scripts -- a dictionary { program => set(scripts) }
 	"""
+	# todo: this function has no test coverage
 
 	# test magic bytes
 	magic = fileobj.read(2)
@@ -63,19 +64,18 @@ def findowners(scriptlist):
 	  pkglist -- a dictionary { package => set(programs) }
 	  orphans -- a set of scripts not found
 	"""
+	# todo: this function has no test coverage
 
 	pkglist = {}
 	scriptfound = set()
 
 	for s in scriptlist:
-		p = subprocess.Popen(["which", s],
-				stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-		out, _ = p.communicate()
-		if p.returncode != 0:
+		out = shutil.which(s)
+		if not out:
 			continue
 
 		# strip leading slash
-		scriptpath = out.strip()[1:].decode('utf-8', 'surrogateescape')
+		scriptpath = out.lstrip('/')
 		for pkg in Namcap.package.get_installed_packages():
 			pkg_files = [fname for fname, fsize, fmode in pkg.files]
 			if scriptpath in pkg_files:
@@ -84,13 +84,6 @@ def findowners(scriptlist):
 
 	orphans = list(set(scriptlist) - scriptfound)
 	return pkglist, orphans
-
-def getprovides(depends, provides):
-	for i in depends.keys():
-		pac = load(i)
-
-		if pac != None and 'provides' in pac and pac["provides"] != None:
-			provides[i] = pac["provides"]
 
 class ShebangDependsRule(TarballRule):
 	name = "shebangdepends"

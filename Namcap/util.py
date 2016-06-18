@@ -55,10 +55,7 @@ def is_elf(path):
 	if not magic:
 		return False
 	# magic elf header, present in binaries and libraries
-	if magic == b"\x7FELF":
-		return True
-	else:
-		return False
+	return magic == b"\x7FELF"
 
 def script_type(path):
 	firstline = _read_carefully(path, lambda fd: fd.readline())
@@ -67,13 +64,13 @@ def script_type(path):
 		return None
 	script = re.compile('#!.*/(.*)')
 	m = script.match(firstline)
-	if m != None:
-		cmd = m.group(1).split()
-		name = cmd[0]
-		if name == 'env':
-			name = cmd[1]
-		return name
-	return None
+	if m is None:
+		return None
+	cmd = m.group(1).split()
+	name = cmd[0]
+	if name == 'env':
+		name = cmd[1]
+	return name
 
 clean_filename = lambda s: re.search(r"/tmp/namcap\.[0-9]*/(.*)", s).group(1)
 

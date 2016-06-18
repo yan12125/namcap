@@ -80,13 +80,10 @@ class MakepkgTest(unittest.TestCase):
 		os.chdir(pwd)
 
 	def run_rule_on_tarball(self, filename, rule):
-		ret = subprocess.call(["unxz", '-f', filename + ".xz"])
-		self.assertEqual(ret, 0)
-
 		# process PKGINFO
-		pkg = Namcap.package.load_from_tarball(filename)
+		pkg = Namcap.package.load_from_tarball(filename + ".xz")
 
-		tar = tarfile.open(filename)
+		tar = tarfile.open(filename + ".xz")
 		r = rule()
 		r.analyze(pkg, tar)
 		tar.close()
