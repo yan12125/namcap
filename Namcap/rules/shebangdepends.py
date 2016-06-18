@@ -37,7 +37,6 @@ def scanshebangs(fileobj, filename, scripts):
 	Stores
 	  scripts -- a dictionary { program => set(scripts) }
 	"""
-	# todo: this function has no test coverage
 
 	# test magic bytes
 	magic = fileobj.read(2)
@@ -64,7 +63,6 @@ def findowners(scriptlist):
 	  pkglist -- a dictionary { package => set(programs) }
 	  orphans -- a set of scripts not found
 	"""
-	# todo: this function has no test coverage
 
 	pkglist = {}
 	scriptfound = set()

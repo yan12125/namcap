@@ -59,7 +59,10 @@ def is_elf(path):
 
 def script_type(path):
 	firstline = _read_carefully(path, lambda fd: fd.readline())
-	firstline = firstline.decode('ascii', 'ignore')
+	try:
+		firstline = firstline.decode('utf-8', 'strict')
+	except UnicodeDecodeError:
+		return None
 	if not firstline:
 		return None
 	script = re.compile('#!.*/(.*)')
