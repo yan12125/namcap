@@ -25,66 +25,50 @@ from collections import defaultdict
 import re
 import os
 import subprocess
-import tempfile
 import Namcap.package
 from Namcap.ruleclass import *
 
+from elftools.elf.enums import ENUM_D_TAG
+from elftools.elf.elffile import ELFFile
+from elftools.elf.dynamic import DynamicSection
+
 libcache = {'i686': {}, 'x86-64': {}}
 
-def figurebitsize(line):
+def scanlibs(fileobj, filename):
 	"""
-	Given a line of output from readelf (usually Shared library:) return
-	'i686' or 'x86-64' if the binary is a 32bit or 64bit binary
-	"""
-
-	address = line.split()[0]
-	if len(address) == 18: # + '0x' + 16 digits
-		return 'x86-64'
-	else:
-		return 'i686'
-
-def scanlibs(fileobj, filename, sharedlibs):
-	"""
-	Run "readelf -d" on a file-like object (e.g. a TarFile)
+	Find shared libraries in a file-like binary object
 
 	If it depends on a library, store that library's path.
 
-	sharedlibs: a dictionary { library => set(ELF files using that library) }
+	returns: a dictionary { library => set(ELF files using that library) }
 	"""
-	shared = re.compile('Shared library: \[(.*)\]')
 
 	# test magic bytes
 	magic = fileobj.read(4)
 	if magic[:4] != b"\x7fELF":
-		return
+		return {}
 
-	# read the rest of file
-	tmp = tempfile.NamedTemporaryFile(delete=False)
-	tmp.write(magic + fileobj.read())
-	tmp.close()
-
-	try:
-		p = subprocess.Popen(["readelf", "-d", tmp.name],
-				env = {"LANG": "C"},
-				stdout=subprocess.PIPE,
-				stderr=subprocess.PIPE)
-		var = p.communicate()
-		assert(p.returncode == 0)
-		for j in var[0].decode('ascii').splitlines():
-			n = shared.search(j)
-			# Is this a Shared library: line?
-			if n != None:
-				# Find out its architecture
-				architecture = figurebitsize(j)
-				try:
-					libpath = os.path.abspath(
-							libcache[architecture][n.group(1)])[1:]
-					sharedlibs.setdefault(libpath, set()).add(filename)
-				except KeyError:
-					# We didn't know about the library, so add it for fail later
-					sharedlibs.setdefault(n.group(1), set()).add(filename)
-	finally:
-		os.unlink(tmp.name)
+	fileobj.seek(0)
+	elffile = ELFFile(fileobj)
+	sharedlibs = defaultdict(set)
+	for section in elffile.iter_sections():
+		if not isinstance(section, DynamicSection):
+			continue
+		for tag in section.iter_tags():
+			# DT_NEEDED means shared library
+			if tag.entry.d_tag != 'DT_NEEDED':
+				continue
+			bitsize = elffile.elfclass
+			architecture = {32:'i686', 64:'x86-64'}[bitsize]
+			libname = tag.needed.decode('utf-8')
+			try:
+				libpath = os.path.abspath(
+						libcache[architecture][libname])[1:]
+				sharedlibs[libpath].add(filename)
+			except KeyError:
+				# We didn't know about the library, so add it for fail later
+				sharedlibs[libname].add(filename)
+	return sharedlibs
 
 def finddepends(liblist):
 	"""
@@ -157,7 +141,7 @@ class SharedLibsRule(TarballRule):
 			if not entry.isfile():
 				continue
 			f = tar.extractfile(entry)
-			scanlibs(f, entry.name, liblist)
+			liblist.update(scanlibs(f, entry.name))
 			f.close()
 
 		# Ldd all the files and find all the link and script dependencies
