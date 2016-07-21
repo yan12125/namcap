@@ -29,7 +29,7 @@ class FHSRule(TarballRule):
 				'etc/', 'opt/',
 				'lib/modules',
 				'usr/bin/', 'usr/include/', 'usr/lib/', 'usr/lib32/',
-				'usr/sbin/', 'usr/share/',
+				'usr/sbin/', 'usr/share/', 'usr/src/',
 				'var/cache/', 'var/lib/', 'var/log/', 'var/opt/',
 				'var/spool/', 'var/state/',
 				'.PKGINFO', '.INSTALL', '.CHANGELOG', '.MTREE', '.BUILDINFO',
