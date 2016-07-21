@@ -22,7 +22,7 @@ Check for ELF files to see if a package should be 'any' architecture
 """
 
 import os, re
-from Namcap.util import is_elf, clean_filename
+from Namcap.util import is_elf, is_static, clean_filename
 from Namcap.ruleclass import *
 
 class package(TarballRule):
@@ -38,8 +38,8 @@ class package(TarballRule):
 			if not entry.isfile():
 				continue
 			f = tar.extractfile(entry)
-			# Archive files are considered as ELF (FS#24854)
-			if f.read(4) in (b"\x7fELF", b"!<ar"):
+			# Ar files (static libs) are also architecture specific (FS#24854)
+			if is_elf(f) or is_static(f):
 				found_elffiles.append(entry.name)
 			f.close()
 

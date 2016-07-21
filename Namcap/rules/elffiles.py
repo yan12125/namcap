@@ -51,7 +51,7 @@ class ELFPaths(TarballRule):
 				continue
 			# is it an ELF file ?
 			f = tar.extractfile(entry)
-			if f.read(4) == b"\x7fELF":
+			if is_elf(f):
 				invalid_elffiles.append(entry.name)
 
 		self.errors = [("elffile-not-in-allowed-dirs %s", i)
@@ -62,13 +62,12 @@ def _test_elf_and_extract(tar, entry):
 	if not entry.isfile():
 		return
 	f = tar.extractfile(entry)
-	magic = f.read(4)
-	if magic != b"\x7fELF":
+	if not is_elf(f):
 		return
 
 	# read the rest of file
 	tmp = tempfile.NamedTemporaryFile(delete=False)
-	tmp.write(magic + f.read())
+	tmp.write(f.read())
 	tmp.close()
 	return tmp.name
 

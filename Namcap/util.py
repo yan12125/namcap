@@ -46,16 +46,23 @@ def _read_carefully(path, readcall):
 		os.chmod(path, statinfo.st_mode)
 	return val
 
-def is_elf(path):
-	"""
-	Given a file path, ensure it exists and peek at the first few bytes
-	to determine if it is an ELF file.
-	"""
-	magic = _read_carefully(path, lambda fd: fd.read(4))
-	if not magic:
-		return False
-	# magic elf header, present in binaries and libraries
-	return magic == b"\x7FELF"
+def _file_has_magic(fileobj, magic_bytes):
+	length = len(magic_bytes)
+	magic = fileobj.read(length)
+	fileobj.seek(0)
+	return magic == magic_bytes
+
+def is_elf(fileobj):
+	"Take file object, peek at the magic bytes to check if ELF file."
+	return _file_has_magic(fileobj, b"\x7fELF")
+
+def is_static(fileobj):
+	"Take file object, peek at the magic bytes to check if static lib."
+	return _file_has_magic(fileobj, b"!<arch>\n")
+
+def is_script(fileobj):
+	"Take file object, peek at the magic bytes to check if script."
+	return _file_has_magic(fileobj, b"#!")
 
 def script_type(path):
 	firstline = _read_carefully(path, lambda fd: fd.readline())

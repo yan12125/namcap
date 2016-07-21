@@ -27,6 +27,7 @@ import os
 import subprocess
 import Namcap.package
 from Namcap.ruleclass import *
+from Namcap.util import is_elf
 
 from elftools.elf.enums import ENUM_D_TAG
 from elftools.elf.elffile import ELFFile
@@ -43,12 +44,9 @@ def scanlibs(fileobj, filename):
 	returns: a dictionary { library => set(ELF files using that library) }
 	"""
 
-	# test magic bytes
-	magic = fileobj.read(4)
-	if magic[:4] != b"\x7fELF":
+	if not is_elf(fileobj):
 		return {}
 
-	fileobj.seek(0)
 	elffile = ELFFile(fileobj)
 	sharedlibs = defaultdict(set)
 	for section in elffile.iter_sections():

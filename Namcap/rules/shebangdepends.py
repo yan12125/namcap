@@ -27,7 +27,7 @@ import tempfile
 import shutil
 import pyalpm
 import Namcap.package
-from Namcap.util import script_type
+from Namcap.util import is_script, script_type
 from Namcap.ruleclass import *
 
 def scanshebangs(fileobj, filename, scripts):
@@ -39,12 +39,11 @@ def scanshebangs(fileobj, filename, scripts):
 	"""
 
 	# test magic bytes
-	magic = fileobj.read(2)
-	if magic != b"#!":
+	if not is_script(fileobj):
 		return
 	# read the rest of file
 	tmp = tempfile.NamedTemporaryFile(delete=False)
-	tmp.write(magic + fileobj.read())
+	tmp.write(fileobj.read())
 	tmp.close()
 
 	try:

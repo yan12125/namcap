@@ -58,11 +58,11 @@ class package(TarballRule):
 				continue
 
 			# is it an ELF file ?
+			if not is_elf(tar.extractfile(entry)):
+				continue # not an ELF file
 			f = tar.extractfile(entry)
 			elf = f.read()
 			f.close()
-			if elf[:4] != b"\x7fELF":
-				continue # not an ELF file
 
 			# write it to a temporary file
 			f = tempfile.NamedTemporaryFile(delete = False)
