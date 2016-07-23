@@ -28,6 +28,7 @@ import subprocess
 import Namcap.package
 from Namcap.ruleclass import *
 from Namcap.util import is_elf
+from Namcap.rules.rpath import get_rpaths
 
 from elftools.elf.enums import ENUM_D_TAG
 from elftools.elf.elffile import ELFFile
@@ -35,7 +36,7 @@ from elftools.elf.dynamic import DynamicSection
 
 libcache = {'i686': {}, 'x86-64': {}}
 
-def scanlibs(fileobj, filename):
+def scanlibs(fileobj, filename, custom_libs):
 	"""
 	Find shared libraries in a file-like binary object
 
@@ -59,6 +60,9 @@ def scanlibs(fileobj, filename):
 			bitsize = elffile.elfclass
 			architecture = {32:'i686', 64:'x86-64'}[bitsize]
 			libname = tag.needed.decode('utf-8')
+			if libname in custom_libs:
+				sharedlibs[custom_libs[libname][1:]].add(filename)
+				continue
 			try:
 				libpath = os.path.abspath(
 						libcache[architecture][libname])[1:]
@@ -134,12 +138,21 @@ class SharedLibsRule(TarballRule):
 		dependlist = {}
 		filllibcache()
 		os.environ['LC_ALL'] = 'C'
+		pkg_so_files = ['/' + n for n in tar.getnames() if '.so' in n]
 
 		for entry in tar:
 			if not entry.isfile():
 				continue
 			f = tar.extractfile(entry)
-			liblist.update(scanlibs(f, entry.name))
+			# find anything that could be rpath related
+			rpath_files = {}
+			if is_elf(f):
+				rpaths = list(get_rpaths(f))
+				f.seek(0)
+				for n in pkg_so_files:
+					if any(n.startswith(rp) for rp in rpaths):
+						rpath_files[os.path.basename(n)] = n
+			liblist.update(scanlibs(f, entry.name, rpath_files))
 			f.close()
 
 		# Ldd all the files and find all the link and script dependencies
