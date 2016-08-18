@@ -35,7 +35,7 @@ def get_rpaths(fileobj):
 		for tag in section.iter_tags():
 			if tag.entry.d_tag != 'DT_RPATH':
 				continue
-			rpaths = tag.rpath.decode('ascii')
+			rpaths = tag.rpath
 			rpaths = rpaths.split(':')
 			for path in rpaths:
 				yield path

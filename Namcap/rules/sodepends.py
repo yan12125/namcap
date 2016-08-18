@@ -59,7 +59,7 @@ def scanlibs(fileobj, filename, custom_libs):
 				continue
 			bitsize = elffile.elfclass
 			architecture = {32:'i686', 64:'x86-64'}[bitsize]
-			libname = tag.needed.decode('utf-8')
+			libname = tag.needed
 			if libname in custom_libs:
 				sharedlibs[custom_libs[libname][1:]].add(filename)
 				continue
