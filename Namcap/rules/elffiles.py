@@ -19,10 +19,9 @@
 #
 
 import os
-import tempfile
-import subprocess
 
 from elftools.elf.elffile import ELFFile
+from elftools.elf.dynamic import DynamicSection
 
 from Namcap.util import is_elf, clean_filename
 from Namcap.ruleclass import *
@@ -68,27 +67,9 @@ class ELFPaths(TarballRule):
 				for i in questionable_elffiles]
 
 
-def _test_elf_and_extract(tar, entry):
-	"Tests whether a Tar entry is an ELF file and returns the name of a temp file."
-	if not entry.isfile():
-		return
-	f = tar.extractfile(entry)
-	if not is_elf(f):
-		return
-
-	# read the rest of file
-	tmp = tempfile.NamedTemporaryFile(delete=False)
-	tmp.write(f.read())
-	tmp.close()
-	return tmp.name
-
 class ELFTextRelocationRule(TarballRule):
 	"""
 	Check for text relocations in ELF files.
-
-	Introduced by FS#26434. Text relocations are detected by the
-	eu-findtextrel utility from elfutils. eu-findtextrel returns 0
-	whenever the input file has a text relocation section.
 	"""
 
 	name = "elftextrel"
@@ -98,18 +79,18 @@ class ELFTextRelocationRule(TarballRule):
 		files_with_textrel = []
 
 		for entry in tar:
-			tmpname = _test_elf_and_extract(tar, entry)
-			if not tmpname:
+			if not entry.isfile():
 				continue
-
-			try:
-				ret = subprocess.call(["eu-findtextrel", tmpname],
-					stdout=open(os.devnull, 'w'),
-					stderr=open(os.devnull, 'w'))
-				if ret == 0:
-					files_with_textrel.append(entry.name)
-			finally:
-				os.unlink(tmpname)
+			fp = tar.extractfile(entry)
+			if not is_elf(fp):
+				continue
+			elffile = ELFFile(fp)
+			for section in elffile.iter_sections():
+				if not isinstance(section, DynamicSection):
+					continue
+				for tag in section.iter_tags():
+					if tag.entry.d_tag == 'DT_TEXTREL':
+						files_with_textrel.append(entry.name)
 
 		if files_with_textrel:
 			self.warnings = [("elffile-with-textrel %s", i)
@@ -131,23 +112,19 @@ class ELFExecStackRule(TarballRule):
 		exec_stacks = []
 
 		for entry in tar:
-			tmpname = _test_elf_and_extract(tar, entry)
-			if not tmpname:
+			if not entry.isfile():
 				continue
+			fp = tar.extractfile(entry)
+			if not is_elf(fp):
+				continue
+			elffile = ELFFile(fp)
+			for segment in elffile.iter_segments():
+				if segment['p_type'] != 'PT_GNU_STACK':
+					continue
 
-			try:
-				fp = open(tmpname, 'rb')
-				elffile = ELFFile(fp)
-
-				for segment in elffile.iter_segments():
-					if segment['p_type'] != 'PT_GNU_STACK': continue
-
-					mode = segment['p_flags']
-					if mode & 1: exec_stacks.append(entry.name)
-
-				fp.close()
-			finally:
-				os.unlink(tmpname)
+				mode = segment['p_flags']
+				if mode & 1:
+					exec_stacks.append(entry.name)
 
 		if exec_stacks:
 			self.warnings = [("elffile-with-execstack %s", i)
