@@ -30,32 +30,43 @@ from Namcap.ruleclass import *
 # Valid directories for ELF files
 valid_dirs = ['bin/', 'sbin/', 'usr/bin/', 'usr/sbin/', 'lib/',
 		'usr/lib/', 'usr/lib32/']
+# Questionable directories for ELF files
+# (Suppresses some output spam.)
+questionable_dirs = ['opt/']
 
 class ELFPaths(TarballRule):
 	name = "elfpaths"
 	description = "Check about ELF files outside some standard paths."
 	def analyze(self, pkginfo, tar):
 		invalid_elffiles = []
+		questionable_elffiles = []
 
 		for entry in tar:
 			# is it a regular file ?
 			if not entry.isfile():
 				continue
 			# is it outside standard binary dirs ?
-			is_outside_std_dirs = True
-			for d in valid_dirs:
-				if entry.name.startswith(d):
-					is_outside_std_dirs = False
-					break
-			if not is_outside_std_dirs:
+			in_std_dirs = any(entry.name.startswith(d) for d in valid_dirs)
+			in_que_dirs = any(entry.name.startswith(d) for d in questionable_dirs)
+
+			if in_std_dirs:
 				continue
 			# is it an ELF file ?
 			f = tar.extractfile(entry)
 			if is_elf(f):
-				invalid_elffiles.append(entry.name)
+				if in_que_dirs:
+					questionable_elffiles.append(entry.name)
+				else:
+					invalid_elffiles.append(entry.name)
 
+		que_elfdirs = [d for d in questionable_dirs if any(f.startswith(d) for f in questionable_elffiles)]
 		self.errors = [("elffile-not-in-allowed-dirs %s", i)
 				for i in invalid_elffiles]
+		self.errors.extend(("elffile-in-questionable-dirs %s", i)
+				for i in que_elfdirs)
+		self.infos = [("elffile-not-in-allowed-dirs %s", i)
+				for i in questionable_elffiles]
+
 
 def _test_elf_and_extract(tar, entry):
 	"Tests whether a Tar entry is an ELF file and returns the name of a temp file."

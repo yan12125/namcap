@@ -16,6 +16,7 @@ dangling-symlink %s points to %s :: Symlink (%s) points to non-existing %s
 directory-not-world-executable %s :: Directory (%s) does not have the world executable bit set.
 elffile-in-any-package %s :: ELF file ('%s') found in an 'any' package.
 elffile-not-in-allowed-dirs %s :: ELF file ('%s') outside of a valid path.
+elffile-in-questionable-dirs %s :: ELF files outside of a valid path ('%s').
 elffile-with-textrel %s :: ELF file ('%s') has text relocations.
 elffile-with-execstack %s :: ELF file ('%s') has executable stack.
 empty-directory %s :: Directory (%s) is empty
