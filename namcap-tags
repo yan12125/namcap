@@ -19,6 +19,7 @@ elffile-not-in-allowed-dirs %s :: ELF file ('%s') outside of a valid path.
 elffile-in-questionable-dirs %s :: ELF files outside of a valid path ('%s').
 elffile-with-textrel %s :: ELF file ('%s') has text relocations.
 elffile-with-execstack %s :: ELF file ('%s') has executable stack.
+elffile-without-relro %s :: ELF file ('%s') lacks RELRO, check LDFLAGS.
 empty-directory %s :: Directory (%s) is empty
 error-running-rule %s :: Error running rule '%s'
 external-hooks-name %s :: .INSTALL file runs a command (%s) provided by hooks.

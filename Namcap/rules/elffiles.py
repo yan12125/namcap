@@ -130,4 +130,33 @@ class ELFExecStackRule(TarballRule):
 			self.warnings = [("elffile-with-execstack %s", i)
 					for i in exec_stacks]
 
+class ELFGnuRelroRule(TarballRule):
+	"""
+	Check for read-only relocation in ELF files.
+
+	Introduced by FS#26435. Uses pyelftools to check for GNU_RELRO.
+	"""
+	# not smart enough for full/partial RELRO (DT_BIND_NOW?)
+
+	name = "elfgnurelro"
+	description = "Check for RELRO in ELF files."
+
+	def analyze(self, pkginfo, tar):
+		missing_relro = []
+
+		for entry in tar:
+			if not entry.isfile():
+				continue
+			fp = tar.extractfile(entry)
+			if not is_elf(fp):
+				continue
+			elffile = ELFFile(fp)
+			if any(seg['p_type'] == 'PT_GNU_RELRO' for seg in elffile.iter_segments()):
+				continue
+			missing_relro.append(entry.name)
+
+		if missing_relro:
+			self.warnings = [("elffile-without-relro %s", i)
+					for i in missing_relro]
+
 # vim: set ts=4 sw=4 noet:
