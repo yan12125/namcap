@@ -34,6 +34,8 @@ if _pyalpm_version_tuple < (0, 5):
 import pycman.config
 pyalpm_handle = pycman.config.init_with_config('/etc/pacman.conf')
 
+from srcinfo.parse import parse_srcinfo
+
 DEPENDS_RE = re.compile("([^<>=:]+)([<>]?=.*)?(: .*)?")
 
 def strip_depend_info(value):
@@ -68,7 +70,7 @@ class PacmanPackage(collections.MutableMapping):
 		except KeyError:
 			return varname
 
-	def __init__(self, data = None, pkginfo = None, db = None):
+	def __init__(self, data = None, pkginfo = None, db = None, srcinfo = None):
 		"""
 		A PacmanPackage object can be ininitialised from:
 		* a dictionary (then its contents are updated accordingly)
@@ -99,7 +101,7 @@ class PacmanPackage(collections.MutableMapping):
 		elif pkginfo is not None:
 			raise TypeError("argument 'pkginfo' must be a string")
 
-		# Parsing of database entries or parsepkgbuild output
+		# Parsing of database entries
 		if isinstance(db, str):
 			attrname = None
 			if '\0' in db:
@@ -107,11 +109,20 @@ class PacmanPackage(collections.MutableMapping):
 				parts = db.split("\0")
 				self.subpackages = [PacmanPackage(db = s) for s in parts[1:]]
 				db = parts[0]
-			for line in db.split('\n'):
-				if line.startswith('%'):
-					attrname = line.strip('%').lower()
-				elif line.strip() != '':
-					self.setdefault(attrname, []).append(line)
+		elif db is not None:
+			raise TypeError("argument 'pkginfo' must be a string")
+
+		if isinstance(srcinfo, str):
+			(parsed, errors) = parse_srcinfo(srcinfo)
+			for key, value in parsed.items():
+				# XXX: pkgname is a dictionary
+				if key == 'pkgbase':
+					self['name'] = value
+				self[key] = value
+
+			# XXX: bash variables do not exists in srcinfo...
+			self._data['setvars'] = []
+
 		elif db is not None:
 			raise TypeError("argument 'pkginfo' must be a string")
 
@@ -186,20 +197,19 @@ def load_from_pkgbuild(path):
 	workingdir = os.path.dirname(path)
 	if workingdir == '':
 		workingdir = None
-	filename = os.path.basename(path)
-	process = subprocess.Popen(['parsepkgbuild', filename],
+	process = subprocess.Popen(['makepkg', '--printsrcinfo'],
 			stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=workingdir)
 	out, err = process.communicate()
 	out = out.decode('utf-8', 'ignore')
 	err = err.decode('utf-8', 'ignore')
-	# this means parsepkgbuild returned an error, so we are not valid
+	# this means makepkg returned an error, so we are not valid
 	if process.returncode > 0:
 		if out:
 			print("Error:", out)
 		if err:
 			print("Error:", err, file=sys.stdout)
 		return None
-	ret = PacmanPackage(db = out)
+	ret = PacmanPackage(srcinfo = out)
 
 	# Add a nice little .pkgbuild surprise
 	pkgbuild = open(path, errors="ignore")
