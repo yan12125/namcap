@@ -18,7 +18,7 @@ url="http://www.example.com/"
 license=('GPL')
 depends=('glibc' 'foobar')
 optdepends=('libabc: provides the abc feature')
-provides=('yourpackage>=0.9')
+provides=('yourpackage=0.9')
 options=('!libtool')
 source=(ftp://ftp.example.com/pub/mypackage-0.1.tar.gz)
 md5sums=('abcdefabcdef12345678901234567890')
@@ -68,6 +68,6 @@ class PkgbuildLoaderTests(unittest.TestCase):
 	def test_provides(self):
 		self.assertEqual(self.pkginfo['provides'], ["yourpackage"])
 		self.assertEqual(self.pkginfo['orig_provides'],
-				["yourpackage>=0.9"])
+				["yourpackage=0.9"])
 
 # vim: set ts=4 sw=4 noet:
