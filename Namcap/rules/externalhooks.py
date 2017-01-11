@@ -31,6 +31,9 @@ class ExternalHooksRule(TarballRule):
 		'xdg-icon-resource',
 		'gconfpkg',
 		'gio-querymodules',
+		'fc-cache',
+		'mkfontscale',
+		'mkfontdir',
 	]
 	def analyze(self, pkginfo, tar):
 		if ".INSTALL" not in tar.getnames():
