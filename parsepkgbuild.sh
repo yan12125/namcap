@@ -94,6 +94,11 @@ if [ -n "$source" ]; then
 	for i in "${source[@]}"; do echo $i; done
 	echo ""
 fi
+if [ -n "$validpgpkeys" ]; then
+	echo "%VALIDGPGKEYS%"
+	for i in "${validpgpkeys[@]}"; do echo $i; done
+	echo ""
+fi
 if [ -n "$md5sums" ]; then
 	echo "%MD5SUMS%"
 	for i in "${md5sums[@]}"; do echo $i; done
