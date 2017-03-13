@@ -110,7 +110,7 @@ class PacmanPackage(collections.MutableMapping):
 			for line in db.split('\n'):
 				if line.startswith('%'):
 					attrname = line.strip('%').lower()
-				elif line.strip() != '':
+				elif line.strip() != '' and attrname:
 					self.setdefault(attrname, []).append(line)
 		elif db is not None:
 			raise TypeError("argument 'pkginfo' must be a string")
