@@ -59,6 +59,7 @@ from . import (
   carch,
   extravars,
   invalidstartdir,
+  makepkgfunctions,
   missingvars,
   pkginfo,
   pkgnameindesc,

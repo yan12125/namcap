@@ -44,6 +44,7 @@ libtool-file-present %s :: File (%s) is a libtool file
 library-no-package-associated %s :: Referenced library '%s' is an uninstalled dependency
 link-level-dependence %s in %s :: Link-level dependence (%s) in file %s
 lots-of-docs %f :: Package was %.0f%% docs by size; maybe you should split out a docs package
+makepkg-function-used %s :: PKGBUILD uses internal makepkg '%s' subroutine
 missing-backup-file %s :: File in backup array (%s) not found in package
 missing-description :: Missing description in PKGBUILD
 missing-contributor :: Missing Contributor tag
