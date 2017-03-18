@@ -34,6 +34,8 @@ class ExternalHooksRule(TarballRule):
 		'fc-cache',
 		'mkfontscale',
 		'mkfontdir',
+		'systemd-sysusers',
+		'systemd-tmpfiles',
 	]
 	def analyze(self, pkginfo, tar):
 		if ".INSTALL" not in tar.getnames():
