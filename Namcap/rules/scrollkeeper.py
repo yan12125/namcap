@@ -26,8 +26,7 @@ class package(TarballRule):
 	def analyze(self, pkginfo, tar):
 		scroll = re.compile("var.*/scrollkeeper/?$")
 		for i in tar.getnames():
-			n = scroll.search(i)
-			if n != None:
+			if scroll.search(i):
 				self.errors.append(("scrollkeeper-dir-exists %s", i))
 
 # vim: set ts=4 sw=4 noet:

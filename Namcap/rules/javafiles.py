@@ -20,6 +20,7 @@
 
 import os
 from Namcap.ruleclass import *
+from Namcap.util import is_java
 
 class JavaFiles(TarballRule):
 	name = "javafiles"
@@ -38,11 +39,11 @@ class JavaFiles(TarballRule):
 				continue
 			# is it a CLASS file ?
 			f = tar.extractfile(entry)
-			if f.read(4) == b"\xCA\xFE\xBA\xBE":
+			if is_java(f):
 				javas.append(entry.name)
 				#self.infos.append( ('java-class-file-found %s', entry.name) )
 			f.close()
-		if len(javas) > 0:
+		if javas:
 			reasons = pkginfo.detected_deps.setdefault('java-runtime', [])
 			reasons.append( ('java-runtime-needed %s', ', '.join(javas)) )
 

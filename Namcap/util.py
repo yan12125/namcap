@@ -19,32 +19,6 @@
 
 import os
 import re
-import stat
-
-def _read_carefully(path, readcall):
-	if not os.path.isfile(path):
-		return False
-	reset_perms = False
-	if not os.access(path, os.R_OK):
-		# don't mess with links we can't read
-		if os.path.islink(path):
-			return None
-		reset_perms = True
-		# attempt to make it readable if possible
-		statinfo = os.stat(path)
-		newmode = statinfo.st_mode | stat.S_IRUSR
-		try:
-			os.chmod(path, newmode)
-		except IOError:
-			return None
-	fd = open(path, 'rb')
-	val = readcall(fd)
-	fd.close()
-	# reset permissions if necessary
-	if reset_perms:
-		# set file back to original permissions
-		os.chmod(path, statinfo.st_mode)
-	return val
 
 def _file_has_magic(fileobj, magic_bytes):
 	length = len(magic_bytes)
@@ -64,8 +38,13 @@ def is_script(fileobj):
 	"Take file object, peek at the magic bytes to check if script."
 	return _file_has_magic(fileobj, b"#!")
 
-def script_type(path):
-	firstline = _read_carefully(path, lambda fd: fd.readline())
+def is_java(fileobj):
+	"Take file object, peek at the magic bytes to check if class file."
+	return _file_has_magic(fileobj, b"\xCA\xFE\xBA\xBE")
+
+def script_type(fileobj):
+	firstline = fileobj.readline()
+	fileobj.seek(0)
 	try:
 		firstline = firstline.decode('utf-8', 'strict')
 	except UnicodeDecodeError:

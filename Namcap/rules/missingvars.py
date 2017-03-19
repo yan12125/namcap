@@ -65,9 +65,9 @@ class TagsRule(PkgbuildRule):
 		maintainertag = 0
 		idtag = 0
 		for i in pkginfo.pkgbuild:
-			if re.match("#\s*Contributor\s*:", i) != None:
+			if re.match("#\s*Contributor\s*:", i):
 				contributortag = 1
-			if re.match("#\s*Maintainer\s*:", i) != None:
+			if re.match("#\s*Maintainer\s*:", i):
 				maintainertag = 1
 
 		if contributortag != 1:

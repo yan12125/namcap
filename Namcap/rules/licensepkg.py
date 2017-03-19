@@ -26,22 +26,22 @@ class package(TarballRule):
 	def analyze(self, pkginfo, tar):
 		if 'license' not in pkginfo or len(pkginfo["license"]) == 0:
 			self.errors.append(("missing-license", ()))
-		else:
-			licensepaths = [x for x in tar.getnames() if x.startswith('usr/share/licenses') and not x.endswith('/')]
-			licensedirs = [os.path.split(os.path.split(x)[0])[1] for x in licensepaths]
-			licensefiles = [os.path.split(x)[1] for x in licensepaths]
-			# Check all licenses for validity
-			for license in pkginfo["license"]:
-				lowerlicense, _, sublicense = license.lower().partition(':')
-				if lowerlicense.startswith('custom') or lowerlicense in ("bsd", "mit", "isc", "python", "zlib", "libpng"):
-					if pkginfo["name"] not in licensedirs:
-						self.errors.append(("missing-custom-license-dir usr/share/licenses/%s", pkginfo["name"]))
-					elif len(licensefiles) == 0:
-						self.errors.append(("missing-custom-license-file usr/share/licenses/%s/*", pkginfo["name"]))
-				# A common license
-				else:
-					commonlicenses = [x.lower() for x in os.listdir('/usr/share/licenses/common')]
-					if lowerlicense not in commonlicenses:
-						self.errors.append(("not-a-common-license %s", license))
+			return
+		licensepaths = [x for x in tar.getnames() if x.startswith('usr/share/licenses') and not x.endswith('/')]
+		licensedirs = [os.path.split(os.path.split(x)[0])[1] for x in licensepaths]
+		licensefiles = [os.path.split(x)[1] for x in licensepaths]
+		# Check all licenses for validity
+		for license in pkginfo["license"]:
+			lowerlicense, _, sublicense = license.lower().partition(':')
+			if lowerlicense.startswith('custom') or lowerlicense in ("bsd", "mit", "isc", "python", "zlib", "libpng"):
+				if pkginfo["name"] not in licensedirs:
+					self.errors.append(("missing-custom-license-dir usr/share/licenses/%s", pkginfo["name"]))
+				elif len(licensefiles) == 0:
+					self.errors.append(("missing-custom-license-file usr/share/licenses/%s/*", pkginfo["name"]))
+			# A common license
+			else:
+				commonlicenses = [x.lower() for x in os.listdir('/usr/share/licenses/common')]
+				if lowerlicense not in commonlicenses:
+					self.errors.append(("not-a-common-license %s", license))
 
 # vim: set ts=4 sw=4 noet:

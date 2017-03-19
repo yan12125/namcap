@@ -21,11 +21,8 @@
 
 """Checks dependencies on programs specified in shebangs."""
 
-import re
 import os
-import tempfile
 import shutil
-import pyalpm
 import Namcap.package
 from Namcap.util import is_script, script_type
 from Namcap.ruleclass import *
@@ -41,18 +38,11 @@ def scanshebangs(fileobj, filename, scripts):
 	# test magic bytes
 	if not is_script(fileobj):
 		return
-	# read the rest of file
-	tmp = tempfile.NamedTemporaryFile(delete=False)
-	tmp.write(fileobj.read())
-	tmp.close()
-
-	try:
-		cmd = script_type(tmp.name)
-		if cmd != None:
-			assert(isinstance(cmd, str))
-			scripts.setdefault(cmd, set()).add(filename)
-	finally:
-		os.unlink(tmp.name)
+	# process shebang line
+	cmd = script_type(fileobj)
+	if cmd != None:
+		assert(isinstance(cmd, str))
+		scripts.setdefault(cmd, set()).add(filename)
 
 def findowners(scriptlist):
 	"""

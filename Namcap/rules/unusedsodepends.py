@@ -54,9 +54,10 @@ class package(TarballRule):
 				continue
 
 			# is it an ELF file ?
-			if not is_elf(tar.extractfile(entry)):
-				continue # not an ELF file
 			f = tar.extractfile(entry)
+			if not is_elf(f):
+				f.close()
+				continue
 			elf = f.read()
 			f.close()
 

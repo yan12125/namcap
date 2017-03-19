@@ -79,13 +79,14 @@ class FHSManpagesRule(TarballRule):
 		for i in tar.getmembers():
 			if not i.isfile():
 				continue
+			if i.name.startswith(gooddir):
+				continue
 			if i.name.startswith(bad_dir):
 				self.errors.append(("non-fhs-man-page %s", i.name))
-			elif not i.name.startswith(gooddir):
-				#Check everything else to see if it has a 'man' path component
-				for part in i.name.split(os.sep):
-					if part == "man":
-						self.warnings.append(("potential-non-fhs-man-page %s", i.name))
+				continue
+			#Check everything else to see if it has a 'man' path component
+			if "man" in i.name.split(os.sep):
+				self.warnings.append(("potential-non-fhs-man-page %s", i.name))
 
 class FHSInfoPagesRule(TarballRule):
 	name = "fhs-infopages"
@@ -94,12 +95,13 @@ class FHSInfoPagesRule(TarballRule):
 		for i in tar.getmembers():
 			if not i.isfile():
 				continue
+			if i.name.startswith('usr/share/info'):
+				continue
 			if i.name.startswith('usr/info'):
 				self.errors.append(("non-fhs-info-page %s", i.name))
-			elif not i.name.startswith('usr/share/info'):
-				for part in i.name.split(os.sep):
-					if part == "info":
-						self.warnings.append(("potential-non-fhs-info-page %s", i.name))
+				continue
+			if "info" in i.name.split(os.sep):
+				self.warnings.append(("potential-non-fhs-info-page %s", i.name))
 
 class RubyPathsRule(TarballRule):
 	name = "rubypaths"

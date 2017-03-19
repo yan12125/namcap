@@ -24,7 +24,7 @@ If a certain path is detected then a certain dependency is expected.
 Anything fancier than this should get its own rule.
 """
 
-import os, re
+import re
 from Namcap.ruleclass import *
 
 class PathDependsRule(TarballRule):
