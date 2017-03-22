@@ -21,9 +21,7 @@
 
 """Checks dependencies semi-smartly."""
 
-import re, os, os.path
-import subprocess
-import tempfile
+import re
 from Namcap.ruleclass import *
 import Namcap.tags
 from Namcap import package

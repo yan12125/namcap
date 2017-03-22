@@ -19,10 +19,7 @@
 #   USA
 # 
 
-import os
 import unittest
-import tempfile
-import shutil
 import Namcap.depends
 import Namcap.package
 
