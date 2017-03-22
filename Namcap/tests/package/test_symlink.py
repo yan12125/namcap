@@ -46,6 +46,7 @@ package() {
   ln -s ../nofile "${pkgdir}/usr/share/somelink2"
   ln -s //usr/share/somedata "${pkgdir}/usr/share/validlink"
   ln -s ../share/somedata "${pkgdir}/usr/share/validlink2"
+  ln -s /usr/include/math.h "${pkgdir}/usr/share/deplink"
 }
 """
 	def test_symlink_files(self):
@@ -74,6 +75,8 @@ package() {
 				("usr/share/validlink", "//usr/share/somedata")),
 			("symlink-found %s points to %s",
 				("usr/share/validlink2", "../share/somedata")),
+			("symlink-found %s points to %s",
+				("usr/share/deplink", "/usr/include/math.h")),
 		]))
 
 # vim: set ts=4 sw=4 noet:
