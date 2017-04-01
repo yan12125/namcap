@@ -80,7 +80,14 @@ class DescriptionRule(PkgbuildRule):
 	name = "description"
 	description = "Verifies that the description is set in a PKGBUILD"
 	def analyze(self, pkginfo, tar):
-		if "desc" not in pkginfo or len(pkginfo["desc"]) == 0:
-			self.errors.append(("missing-description", ()))
+		def checkDesc(pkg):
+			if "desc" not in pkg or len(pkg["desc"]) == 0:
+				self.errors.append(("missing-description", ()))
+
+		if pkginfo.is_split:
+			for pkg in pkginfo.subpackages:
+				checkDesc(pkg)
+		else:
+			checkDesc(pkginfo)
 
 # vim: set ts=4 sw=4 noet:
