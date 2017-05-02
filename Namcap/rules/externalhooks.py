@@ -36,6 +36,7 @@ class ExternalHooksRule(TarballRule):
 		'mkfontdir',
 		'systemd-sysusers',
 		'systemd-tmpfiles',
+		'vlc-cache-gen',
 	]
 	def analyze(self, pkginfo, tar):
 		if ".INSTALL" not in tar.getnames():
