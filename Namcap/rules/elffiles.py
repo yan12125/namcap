@@ -22,6 +22,7 @@ import os
 
 from elftools.elf.elffile import ELFFile
 from elftools.elf.dynamic import DynamicSection
+from elftools.elf.sections import SymbolTableSection
 
 from Namcap.util import is_elf, clean_filename
 from Namcap.ruleclass import *
@@ -158,5 +159,39 @@ class ELFGnuRelroRule(TarballRule):
 		if missing_relro:
 			self.warnings = [("elffile-without-relro %s", i)
 					for i in missing_relro]
+
+class ELFUnstrippedRule(TarballRule):
+	"""
+	Checks for unstripped ELF files. Uses pyelftools to check if
+	.symtab exists.
+
+	Introduced by FS#27485.
+	"""
+
+	name = "elfunstripped"
+	description = "Check for unstripped ELF files."
+
+	def analyze(self, pkginfo, tar):
+		unstripped_binaries = []
+
+		for entry in tar:
+			if not entry.isfile():
+				continue
+			fp = tar.extractfile(entry)
+			if not is_elf(fp):
+				continue
+			elffile = ELFFile(fp)
+			for section in elffile.iter_sections():
+				if not isinstance(section, SymbolTableSection):
+					continue
+
+				if section['sh_entsize'] == 0:
+					continue
+
+				if section.name == '.symtab':
+					unstripped_binaries.append(entry.name)
+		if unstripped_binaries:
+			self.warnings = [("elffile-unstripped %s", i)
+					for i in unstripped_binaries]
 
 # vim: set ts=4 sw=4 noet:
