@@ -194,4 +194,37 @@ class ELFUnstrippedRule(TarballRule):
 			self.warnings = [("elffile-unstripped %s", i)
 					for i in unstripped_binaries]
 
+class NoPIERule(TarballRule):
+	"""
+	Checks for no PIE ELF files.
+	"""
+
+	name = "elfnopie"
+	description = "Check for no PIE ELF files."
+
+	def has_dt_debug(self, elffile):
+		for section in elffile.iter_sections():
+			if not isinstance(section, DynamicSection):
+				continue
+			if any(tag.entry.d_tag == 'DT_DEBUG' for tag in section.iter_tags()):
+				return True
+		return False
+
+	def analyze(self, pkginfo, tar):
+		nopie_binaries = []
+
+		for entry in tar:
+			if not entry.isfile():
+				continue
+			fp = tar.extractfile(entry)
+			if not is_elf(fp):
+				continue
+			elffile = ELFFile(fp)
+			if elffile.header['e_type'] != 'ET_DYN' or not self.has_dt_debug(elffile):
+				nopie_binaries.append(entry.name)
+
+		if nopie_binaries:
+			self.warnings = [("elffile-nopie %s", i) for i in nopie_binaries]
+
+
 # vim: set ts=4 sw=4 noet:
