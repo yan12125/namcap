@@ -137,10 +137,17 @@ class ELFGnuRelroRule(TarballRule):
 
 	Introduced by FS#26435. Uses pyelftools to check for GNU_RELRO.
 	"""
-	# not smart enough for full/partial RELRO (DT_BIND_NOW?)
 
 	name = "elfgnurelro"
-	description = "Check for RELRO in ELF files."
+	description = "Check for FULL RELRO in ELF files."
+
+	def has_bind_now(self, elffile):
+		for section in elffile.iter_sections():
+			if not isinstance(section, DynamicSection):
+				continue
+			if any(tag.entry.d_tag == 'DT_BIND_NOW' for tag in section.iter_tags()):
+				return True
+		return False
 
 	def analyze(self, pkginfo, tar):
 		missing_relro = []
@@ -153,7 +160,9 @@ class ELFGnuRelroRule(TarballRule):
 				continue
 			elffile = ELFFile(fp)
 			if any(seg['p_type'] == 'PT_GNU_RELRO' for seg in elffile.iter_segments()):
-				continue
+				if self.has_bind_now(elffile):
+					continue
+
 			missing_relro.append(entry.name)
 
 		if missing_relro:
