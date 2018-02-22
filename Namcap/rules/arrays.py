@@ -26,10 +26,10 @@ class package(PkgbuildRule):
 	name = "array"
 	description = "Verifies that array variables are actually arrays"
 	def analyze(self, pkginfo, tar):
-		arrayvars = ['arch', 'license', 'depends', 'makedepends',
-			 'optdepends', 'checkdepends', 'provides', 'conflicts' , 'replaces',
-			 'backup', 'source', 'noextract', 'md5sums',
-			 'sha1sums', 'sha256sums', 'sha384sums', 'sha512sums']
+		arrayvars = ['arch', 'license', 'groups', 'depends', 'makedepends',
+			 'optdepends', 'checkdepends', 'provides', 'conflicts', 'replaces',
+			 'backup', 'options', 'source', 'noextract', 'md5sums', 'sha1sums',
+			 'sha256sums', 'sha384sums', 'sha512sums', 'validpgpkeys']
 		for i in pkginfo.pkgbuild:
 			m = re.match('\s*(.*)\s*=\s*(.*)$', i)
 			for j in arrayvars:
