@@ -89,6 +89,8 @@ use-pkgdir :: Use $pkgdir instead of $startdir/pkg
 use-srcdir :: Use $srcdir instead of $startdir/src
 using-dl-sourceforge :: Attempting to use dl sourceforge domain, use downloads.sourceforge.net instead
 variable-not-array %s :: Variable %s is not an array.
+python-distribution-not-found %s :: Cannot find necessary Python distribution %s
+python-distribution-version-mismatch %s %s :: Python distribution %s required but %s found
 
 # dependency tags
 dependency-already-satisfied %s :: Dependency %s included but already satisfied
@@ -107,3 +109,4 @@ kdebase-runtime-needed %s :: needed for programs %s
 java-runtime-needed %s :: found class files %s
 libraries-needed %s %s :: libraries %s needed in files %s
 programs-needed %s %s :: programs %s needed in scripts %s
+python-package-needed %s %s :: package %s needed in Python distributions %s
