@@ -43,6 +43,7 @@ from . import (
   perllocal,
   permissions,
   py_mtime,
+  py_requires,
   rpath,
   scrollkeeper,
   shebangdepends,
