@@ -30,7 +30,7 @@ class ChecksumsRule(PkgbuildRule):
 	name = "checksums"
 	description = "Verifies checksums are included in a PKGBUILD"
 	def analyze(self, pkginfo, tar):
-		checksums=[('md5', 32), ('sha1', 40), ('sha256', 64), ('sha384', 96), ('sha512', 128)]
+		checksums=[('md5', 32), ('sha1', 40), ('sha224', 56), ('sha256', 64), ('sha384', 96), ('sha512', 128)]
 
 		if "source" in pkginfo:
 			haschecksums = False

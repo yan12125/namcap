@@ -109,6 +109,11 @@ if [ -n "$sha1sums" ]; then
 	for i in "${sha1sums[@]}"; do echo $i; done
 	echo ""
 fi
+if [ -n "$sha224sums" ]; then
+	echo "%SHA224SUMS%"
+	for i in "${sha224sums[@]}"; do echo $i; done
+	echo ""
+fi
 if [ -n "$sha256sums" ]; then
 	echo "%SHA256SUMS%"
 	for i in "${sha256sums[@]}"; do echo $i; done
