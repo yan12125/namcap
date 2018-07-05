@@ -17,7 +17,6 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 
-import os
 import re
 
 def _file_has_magic(fileobj, magic_bytes):
@@ -60,7 +59,5 @@ def script_type(fileobj):
 	if name == 'env':
 		name = cmd[1]
 	return name
-
-clean_filename = lambda s: re.search(r"/tmp/namcap\.[0-9]*/(.*)", s).group(1)
 
 # vim: set ts=4 sw=4 noet:
