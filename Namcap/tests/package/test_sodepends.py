@@ -17,11 +17,23 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 #   USA
-# 
+#
 
 import os
 from Namcap.tests.makepkg import MakepkgTest
 import Namcap.rules.sodepends
+from elftools.elf.dynamic import DynamicSection
+from elftools.elf.elffile import ELFFile
+
+def get_soname(filename):
+	with open(filename, 'rb') as f:
+		alpm = ELFFile(f)
+		for section in alpm.iter_sections():
+			if not isinstance(section, DynamicSection):
+				continue
+			for tag in section.iter_tags():
+				if tag.entry.d_tag == 'DT_SONAME':
+					return tag.soname
 
 class SoDependsTest(MakepkgTest):
 	pkgbuild = """
@@ -47,6 +59,7 @@ package() {
 	def test_sodepends(self):
 		"Package with missing pacman dependency"
 		pkgfile = "__namcap_test_sodepends-1.0-1-%(arch)s.pkg.tar" % { "arch": self.arch }
+		alpm_filename = os.path.join('usr/lib', get_soname('/usr/lib/libalpm.so'))
 		with open(os.path.join(self.tmpdir, "PKGBUILD"), "w") as f:
 			f.write(self.pkgbuild)
 		self.run_makepkg()
@@ -56,15 +69,15 @@ package() {
 				)
 		self.assertEqual(pkg.detected_deps['pacman'], [
 			('libraries-needed %s %s',
-			 (str(['usr/lib/libalpm.so.10']), str(["usr/bin/main"]))
+			 (str([alpm_filename]), str(["usr/bin/main"]))
 			)]
 		)
 		e, w, i = Namcap.depends.analyze_depends(pkg)
 		self.assertEqual(e, [
 			('dependency-detected-not-included %s (%s)',
-				('pacman', "libraries ['usr/lib/libalpm.so.10'] needed in files ['usr/bin/main']"))
+				('pacman', "libraries ['%s'] needed in files ['usr/bin/main']" % alpm_filename))
+
 		])
 		self.assertEqual(w, [])
 
 # vim: set ts=4 sw=4 noet:
-
