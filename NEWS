@@ -1,3 +1,20 @@
+namcap (3.2.8)
+	- fix java-runtime handling (FS#24296)
+    - stricter shebang parsing (FS#49733)
+    - /usr/src is okay (FS#49889)
+    - fix API changes in pyelftools 0.24 (FS#50428)
+    - summarize ELF files found in opt (FS#49489)
+    - remove use of eu-findtextrel (FS#42700)
+    - check for RELRO in ELF files (FS#26435)
+    - warn on use of undocumented makepkg functions (FS#43502)
+    - more robust parsing (FS#53161)
+    - packages can symlink to files in depenencies (FS#53282)
+    - warn on unstripped files (FS#27485)
+    - better file handling (FS#57193)
+    - FULL RELRO check
+    - much cleaning and refactoring
+    - many updates to variables/hooks
+
 namcap (3.2.7)
 	- improved carch depends (FS#47862)
 	- better multilib dependencies
