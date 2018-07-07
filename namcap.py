@@ -243,9 +243,9 @@ for package in packages:
 
 	if os.path.isfile(package) and tarfile.is_tarfile(package):
 		process_realpackage(package, active_modules)
-	elif package.endswith('PKGBUILD'):
+	elif 'PKGBUILD' in package:
 		process_pkgbuild(package, active_modules)
 	else:
-		print("Error: Cannot process %s" % package)
+		print("Error: %s not package or PKGBUILD" % package)
 
 # vim: set ts=4 sw=4 noet:
