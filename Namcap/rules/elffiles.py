@@ -228,6 +228,8 @@ class NoPIERule(TarballRule):
 		for entry in tar:
 			if not entry.isfile():
 				continue
+			if '.so' in entry.name:
+				continue
 			fp = tar.extractfile(entry)
 			if not is_elf(fp):
 				continue
