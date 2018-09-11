@@ -140,11 +140,16 @@ class ELFGnuRelroRule(TarballRule):
 	description = "Check for FULL RELRO in ELF files."
 
 	def has_bind_now(self, elffile):
+		DF_BIND_NOW = 0x08
+
 		for section in elffile.iter_sections():
 			if not isinstance(section, DynamicSection):
 				continue
-			if any(tag.entry.d_tag == 'DT_BIND_NOW' for tag in section.iter_tags()):
-				return True
+			for tag in section.iter_tags():
+				if tag.entry.d_tag == 'DT_BIND_NOW':
+					return True
+				if tag.entry.d_tag == 'DT_FLAGS' and tag.entry.d_val & DF_BIND_NOW:
+					return True
 		return False
 
 	def analyze(self, pkginfo, tar):
