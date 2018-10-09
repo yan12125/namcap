@@ -61,6 +61,7 @@ missing-makedeps %s :: Split PKGBUILD needs additional makedepends %s to work pr
 no-elffiles-not-any-package :: No ELF files and not an "any" package
 non-fhs-info-page %s :: Non-FHS info page (%s) found. Use /usr/share/info instead
 non-fhs-man-page %s :: Non-FHS man page (%s) found. Use /usr/share/man instead
+non-unique-source-name %s :: Non-unique source name (%s). Use a unique filename.
 not-a-common-license %s :: %s is not a common license (it's not in /usr/share/licenses/common/)
 not-enough-checksums %s %i needed :: Not enough %s: %i needed
 package-name-in-uppercase :: No upper case letters in package names

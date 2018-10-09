@@ -20,7 +20,8 @@
 "These rules checks basic sanity of package metadata"
 
 import re
-from Namcap.ruleclass import PkgInfoRule
+import os
+from Namcap.ruleclass import PkgInfoRule,PkgbuildRule
 
 class CapsPkgnameRule(PkgInfoRule):
 	name = "capsnamespkg"
@@ -42,5 +43,13 @@ class LicenseRule(PkgInfoRule):
 	def analyze(self, pkginfo, tar):
 		if "license" not in pkginfo or len(pkginfo["license"]) == 0:
 			self.errors.append(("missing-license", ()))
+
+class NonUniqueSourcesRule(PkgbuildRule):
+	name = "non-unique-source"
+	description = "Verifies the downloaded sources have a unique filename"
+	def analyze(self, pkginfo, tar):
+		for source_file in pkginfo["source"]:
+			if '::' not in source_file and re.match(r'^[vV]?(([0-9]){8}|([0-9]+\.?)+)\.', os.path.basename(source_file)):
+				self.warnings.append(("non-unique-source-name %s", os.path.basename(source_file)))
 
 # vim: set ts=4 sw=4 noet:
