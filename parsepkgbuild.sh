@@ -140,7 +140,8 @@ compgen -A variable
 }
 
 # is it a split pkgbuild ?
-if [ -n "${pkgbase}" ]; then
+if [ "${#pkgname[@]}" -gt 1 ]; then
+	pkgbase=${pkgbase:-${pkgname[0]}}
 	_namcap_pkgnames=(${pkgname[@]})
 	unset pkgname
 	echo -e "%SPLIT%\n1\n"
