@@ -39,3 +39,33 @@ class RedundantMakedepends(PkgbuildRule):
 		for i in redundant_makedeps:
 			self.warnings.append(("redundant-makedep %s", i))
 
+class VCSMakedepends(PkgbuildRule):
+	"""
+	This rule checks for missing VCS make dependencies.
+	"""
+	name = "vcs_makedepends"
+	description = "Verify make dependencies for VCS sources"
+
+	def analyze(self, pkginfo, pkgbuild):
+		vcs = {
+			'bzr' : 'bzr',
+			'git' : 'git',
+			'hg' : 'mercurial',
+			'svn' : 'subversion',
+		}
+		missing = []
+
+		for v in vcs:
+			if not any(s.startswith(v) for s in pkginfo["source"]):
+				continue
+			d = vcs[v]
+			if 'makedepends' not in pkginfo:
+				missing.append(d)
+				continue
+			if d not in pkginfo["makedepends"]:
+				missing.append(d)
+
+		for i in missing:
+			self.warnings.append(("missing-vcs-makedeps %s", i))
+
+# vim: set ts=4 sw=4 noet:
