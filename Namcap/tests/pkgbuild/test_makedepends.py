@@ -76,10 +76,10 @@ depends=()
 makedepends=()
 license=('GPL')
 options=('!libtool')
-source=(bzr+https://ftp.example.com/pub/mypackage
-        git+https://ftp.example.com/pub/mypackage
-        hg+https://ftp.example.com/pub/mypackage
-        svn+https://ftp.example.com/pub/mypackage)
+source=(name::bzr+https://example.com/pub/mypackage
+        name::git://example.com/pub/mypackage
+        hg+https://example.com/pub/mypackage
+        svn://example.com/pub/mypackage)
 md5sums=('abcdefabcdef12345678901234567890')
 
 build() {
@@ -102,6 +102,13 @@ package() {
 		self.assertEqual(r.errors, [])
 		self.assertEqual(set(r.warnings),
 			set(("missing-vcs-makedeps %s", i) for i in makedeps))
+		self.assertEqual(r.infos, [])
+
+	def test_example2(self):
+		# Example 2
+		r = self.run_on_pkg(self.pkgbuild1 + 'source=(gitsomething)')
+		self.assertEqual(r.errors, [])
+		self.assertEqual(r.warnings, [])
 		self.assertEqual(r.infos, [])
 
 # vim: set ts=4 sw=4 noet:

@@ -54,10 +54,19 @@ class VCSMakedepends(PkgbuildRule):
 			'svn' : 'subversion',
 		}
 		missing = []
+		protocols = set()
 
-		for v in vcs:
-			if not any(s.startswith(v) for s in pkginfo["source"]):
-				continue
+		for s in pkginfo["source"]:
+			p = s.split("::", 1)[-1]
+			p = p.split("://", 1)[0]
+			p = p.split("+", 1)[0]
+			if p in vcs:
+				protocols.add(p)
+
+		if not protocols:
+			return
+
+		for v in protocols:
 			d = vcs[v]
 			if 'makedepends' not in pkginfo:
 				missing.append(d)
