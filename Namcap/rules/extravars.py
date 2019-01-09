@@ -31,7 +31,7 @@ class package(PkgbuildRule):
 				 'pkgbase', 'pkgver', 'pkgrel', 'epoch', 'pkgdesc', 'groups',
 				 'url', 'install', 'changelog',
 				 'options', 'validpgpkeys'] + carch_vars
-		if 'arch' in pkginfo and len(pkginfo["arch"]) >= 2:
+		if 'arch' in pkginfo and pkginfo['arch'] != ['any']:
 			stdvars.extend(v+'_'+a for v,a in product(carch_vars, pkginfo["arch"]))
 		for varname in pkginfo["setvars"]:
 			if varname.islower() and varname not in stdvars \
