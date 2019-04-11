@@ -2,7 +2,7 @@
 # namcap tests - glibfiles
 # Copyright (C) 2011 Rémy Oudompheng <remy@archlinux.org>
 # Copyright (C) 2016 Kyle Keen <keenerd@gmail.com>
-# 
+#
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
 #   the Free Software Foundation; either version 2 of the License, or
@@ -17,7 +17,7 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 #   USA
-# 
+#
 
 import os
 from Namcap.tests.makepkg import MakepkgTest
@@ -50,10 +50,6 @@ package() {
   # hicolor-icon-theme-needed-for-hicolor-dir
   mkdir -p "${pkgdir}/usr/share/icons/hicolor/64x64/apps"
   touch "${pkgdir}/usr/share/icons/hicolor/64x64/apps/example.png"
-
-  # shared-mime-info-needed
-  mkdir -p "${pkgdir}/usr/share/mime/text"
-  touch "${pkgdir}/usr/share/mime/text/example.xml"
 }
 """
 
@@ -70,7 +66,6 @@ package() {
 				{'dconf': [('dconf-needed-for-glib-schemas', ())],
 				 'glib2': [('glib2-needed-for-gio-modules', ())],
 				 'hicolor-icon-theme': [('hicolor-icon-theme-needed-for-hicolor-dir', ())],
-				 'shared-mime-info': [('shared-mime-info-needed', ())],
 				})
 		self.assertEqual(r.errors, [])
 		self.assertEqual(r.warnings, [])
@@ -78,4 +73,3 @@ package() {
 
 
 # vim: set ts=4 sw=4 noet:
-
