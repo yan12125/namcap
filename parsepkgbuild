@@ -1,7 +1,5 @@
 #!/bin/bash
 
-mkdir -p /tmp/parsepkgbuild
-
 source /etc/makepkg.conf
 
 PARSE_PKGBUILD_PATH=${PARSE_PKGBUILD_PATH:-/usr/share/namcap}
