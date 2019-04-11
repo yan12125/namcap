@@ -18,123 +18,20 @@ fi
 if [ -n "$pkgdesc" ]; then
 	echo -e "%DESC%\n$pkgdesc\n"
 fi
-if [ -n "$groups" ]; then
-	echo "%GROUPS%"
-	for i in ${groups[@]}; do echo $i; done
-	echo ""
-fi
 
-if [ -n "$url" ]; then
-	echo -e "%URL%\n$url\n"
-fi
-if [ -n "$license" ]; then
-	echo "%LICENSE%"
-	for i in ${license[@]}; do echo $i; done
-	echo ""
-fi
-if [ -n "$arch" ]; then
-	echo "%ARCH%"
-	for i in ${arch[@]}; do echo $i; done
-	echo ""
-fi
-if [ -n "$builddate" ]; then
-	echo -e "%BUILDDATE%\n$builddate\n"
-fi
-if [ -n "$packager" ]; then
-	echo -e "%PACKAGER%\n$packager\n"
-fi
+meta_keys=(groups url license arch builddate packager replaces force depends
+           makedepends optdepends conflicts provides backup options source
+		   validpgpkeys {md5,sha{1,224,256,384,512}}sums install)
+for key in "${meta_keys[@]}"; do
+	arr="$key[@]"
+	if [[ -n ${!key} ]]; then
+		echo "%${key^^}%"
+		for i in "${!arr}"; do echo "$i"; done
+		echo ""
+	fi
+done
 
-if [ -n "$replaces" ]; then
-	echo "%REPLACES%"
-	for i in "${replaces[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$force" ]; then
-	echo -e "%FORCE%\n"
-fi
-
-# create depends entry
-if [ -n "$depends" ]; then
-	echo "%DEPENDS%"
-	for i in "${depends[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$makedepends" ]; then
-	echo "%MAKEDEPENDS%"
-	for i in "${makedepends[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$optdepends" ]; then
-	echo "%OPTDEPENDS%"
-	for i in "${optdepends[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$conflicts" ]; then
-	echo "%CONFLICTS%"
-	for i in "${conflicts[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$provides" ]; then
-	echo "%PROVIDES%"
-	for i in "${provides[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$backup" ]; then
-	echo "%BACKUP%"
-	for i in "${backup[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$options" ]; then
-	echo "%OPTIONS%"
-	for i in "${options[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$source" ]; then
-	echo "%SOURCE%"
-	for i in "${source[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$validpgpkeys" ]; then
-	echo "%VALIDGPGKEYS%"
-	for i in "${validpgpkeys[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$md5sums" ]; then
-	echo "%MD5SUMS%"
-	for i in "${md5sums[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$sha1sums" ]; then
-	echo "%SHA1SUMS%"
-	for i in "${sha1sums[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$sha224sums" ]; then
-	echo "%SHA224SUMS%"
-	for i in "${sha224sums[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$sha256sums" ]; then
-	echo "%SHA256SUMS%"
-	for i in "${sha256sums[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$sha384sums" ]; then
-	echo "%SHA384SUMS%"
-	for i in "${sha384sums[@]}"; do echo $i; done
-	echo ""
-fi
-if [ -n "$sha512sums" ]; then
-	echo "%SHA512SUMS%"
-	for i in "${sha512sums[@]}"; do echo $i; done
-	echo ""
-fi
-
-if [ -n "$install" ]; then
-	echo -e "%INSTALL%\n$install\n"
-fi
-
-unset i
+unset arr key meta_keys i
 echo "%SETVARS%"
 compgen -A variable
 }
