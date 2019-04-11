@@ -1,7 +1,7 @@
-# 
+#
 # namcap rules - array
 # Copyright (C) 2003-2009 Jesse Young <jesseyoung@gmail.com>
-# 
+#
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
 #   the Free Software Foundation; either version 2 of the License, or
@@ -15,7 +15,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-# 
+#
 
 """Verifies that array variables are actually arrays"""
 
@@ -29,7 +29,8 @@ class package(PkgbuildRule):
 		arrayvars = ['arch', 'license', 'groups', 'depends', 'makedepends',
 			 'optdepends', 'checkdepends', 'provides', 'conflicts', 'replaces',
 			 'backup', 'options', 'source', 'noextract', 'md5sums', 'sha1sums',
-			 'sha224sums', 'sha256sums', 'sha384sums', 'sha512sums', 'validpgpkeys']
+			 'sha224sums', 'sha256sums', 'sha384sums', 'sha512sums', 'b2sums',
+			 'validpgpkeys']
 		for i in pkginfo.pkgbuild:
 			m = re.match('\s*(.*)\s*=\s*(.*)$', i)
 			for j in arrayvars:

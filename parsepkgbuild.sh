@@ -21,7 +21,7 @@ fi
 
 meta_keys=(groups url license arch builddate packager replaces force depends
            makedepends optdepends conflicts provides backup options source
-		   validpgpkeys {md5,sha{1,224,256,384,512}}sums install)
+		   validpgpkeys {md5,sha{1,224,256,384,512},b2}sums install)
 for key in "${meta_keys[@]}"; do
 	arr="$key[@]"
 	if [[ -n ${!key} ]]; then
