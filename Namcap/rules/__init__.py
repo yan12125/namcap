@@ -31,6 +31,7 @@ from . import (
   fileownership,
   gnomemime,
   hardlinks,
+  hookdepends,
   infodirectory,
   javafiles,
   kdeprograms,
