@@ -45,6 +45,7 @@ from . import (
   py_mtime,
   pydepends,
   rpath,
+  runpath,
   scrollkeeper,
   shebangdepends,
   sodepends,

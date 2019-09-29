@@ -44,6 +44,7 @@ incorrect-owner %s (%s:%s) :: File (%s) is owned by %s:%s
 invalid-filename :: File name %s contains non standard characters
 info-dir-file-present %s :: Info directory file (%s) should not be present
 insecure-rpath %s %s :: Insecure RPATH '%s' in file ('%s')
+insecure-runpath %s %s :: Insecure RUNPATH '%s' in file ('%s')
 libtool-file-present %s :: File (%s) is a libtool file
 library-no-package-associated %s :: Referenced library '%s' is an uninstalled dependency
 link-level-dependence %s in %s :: Link-level dependence (%s) in file %s
