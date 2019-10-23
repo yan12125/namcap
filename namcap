@@ -18,6 +18,12 @@ for arg in "${@}"; do
 			lzo)    cmd='lzop' ;;
 			lrz)    cmd='lrzip'
 				extra_opts="-q -o -" ;;
+			lz4)    cmd='lz4'
+				extra_opts="-q" ;;
+			lz)     cmd='lzip'
+				extra_opts="-q" ;;
+			zst)    cmd='zstd'
+				extra_opts="-q" ;;
 			*)      echo 'Unsupported compression'; exit 1;;
 		esac
 
