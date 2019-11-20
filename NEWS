@@ -1,3 +1,13 @@
+namcap (3.2.9)
+	- warn for duplicated source filenames
+	- improved split package handling
+	- warn if depends duplicated in makedeps
+	- improved VCS handling
+	- improved architecture specific var handling
+	- remove warnings handled by hooks (FS#56898)
+	- add warning for unneeded hook deps
+	- new compression methods in pacman 5.2 (FS#64570)
+
 namcap (3.2.8)
 	- fix java-runtime handling (FS#24296)
     - stricter shebang parsing (FS#49733)
