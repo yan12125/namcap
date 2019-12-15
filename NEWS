@@ -1,3 +1,6 @@
+namcap (3.2.10)
+	- make tests pass by fixing the version in the manpage
+
 namcap (3.2.9)
 	- warn for duplicated source filenames
 	- improved split package handling
