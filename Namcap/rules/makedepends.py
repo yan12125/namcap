@@ -56,6 +56,9 @@ class VCSMakedepends(PkgbuildRule):
 		missing = []
 		protocols = set()
 
+		if 'source' not in pkginfo:
+			return
+
 		for s in pkginfo["source"]:
 			p = s.split("::", 1)[-1]
 			p = p.split("://", 1)[0]
