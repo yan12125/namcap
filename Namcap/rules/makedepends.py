@@ -48,7 +48,7 @@ class VCSMakedepends(PkgbuildRule):
 
 	def analyze(self, pkginfo, pkgbuild):
 		vcs = {
-			'bzr' : 'bzr',
+			'bzr' : 'breezy',
 			'git' : 'git',
 			'hg' : 'mercurial',
 			'svn' : 'subversion',

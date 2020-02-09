@@ -97,7 +97,7 @@ package() {
 
 	def test_example1(self):
 		# Example 1
-		makedeps = ['bzr', 'git', 'mercurial', 'subversion']
+		makedeps = ['breezy', 'git', 'mercurial', 'subversion']
 		r = self.run_on_pkg(self.pkgbuild1)
 		self.assertEqual(r.errors, [])
 		self.assertEqual(set(r.warnings),
