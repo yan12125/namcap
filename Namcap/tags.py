@@ -21,10 +21,12 @@
 # 
 
 import os
+import pathlib
 
 tags = {}
 
 DEFAULT_TAGS = "/usr/share/namcap/namcap-tags"
+IN_TREE_TAGS = pathlib.Path(__file__).resolve().parents[1] / 'namcap-tags'
 
 def load_tags(filename = None, machine = False):
 	"Loads tags from the given filename"
@@ -57,8 +59,8 @@ def format_message(msg):
 # Try to load tags by default
 if os.path.exists(DEFAULT_TAGS):
 	load_tags(DEFAULT_TAGS)
-elif os.path.exists("namcap-tags"):
-	load_tags("namcap-tags")
+elif os.path.exists(IN_TREE_TAGS):
+	load_tags(IN_TREE_TAGS)
 
 
 # vim: set ts=4 sw=4 noet:

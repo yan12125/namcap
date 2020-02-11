@@ -1,9 +1,10 @@
-#!/bin/sh
-PATH="$(pwd):$PATH"
-PARSE_PKGBUILD_PATH="$(pwd)"
+#!/bin/bash
+BASEDIR=$(dirname "$BASH_SOURCE")
+PATH="$BASEDIR:$PATH"
+PARSE_PKGBUILD_PATH="$BASEDIR"
 export PARSE_PKGBUILD_PATH
 
-PYTHONPATH="$(pwd)"
+PYTHONPATH="$BASEDIR"
 export PYTHONPATH
 
-./namcap -t namcap-tags $@
+"$BASEDIR/namcap" -t "$BASEDIR/namcap-tags" $@
