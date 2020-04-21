@@ -36,6 +36,10 @@ echo "%SETVARS%"
 compgen -A variable
 }
 
+startdir=/dummy
+srcdir=/dummy
+pkgdir=/dummy
+
 # is it a split pkgbuild ?
 if [ "${#pkgname[@]}" -gt 1 ]; then
 	pkgbase=${pkgbase:-${pkgname[0]}}
