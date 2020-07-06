@@ -20,6 +20,8 @@
 
 from collections import defaultdict
 import ast
+import re
+import stat
 import sys
 import sysconfig
 import Namcap.package
@@ -84,10 +86,18 @@ class PythonDependencyRule(TarballRule):
 		own_liblist = set()
 
 		for entry in tar:
-			if not entry.isfile() or not entry.name.endswith('.py'):
+			if not entry.isfile():
+				continue
+			is_python_script = False
+			f = tar.extractfile(entry)
+			if entry.mode & (stat.S_IXUSR|stat.S_IXGRP|stat.S_IXOTH):
+				first_few_bytes = f.read(30)
+				f.seek(0)
+				if re.match(br'#!\s*/usr/bin/(env\s+)?python', first_few_bytes):
+					is_python_script = True
+			if not is_python_script and not entry.name.endswith('.py'):
 				continue
 			own_liblist.add(entry.name[:-3])
-			f = tar.extractfile(entry)
 			for module in get_imports(f):
 				liblist[module].add(entry.name)
 			f.close()
