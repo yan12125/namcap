@@ -16,7 +16,7 @@ setup(name="namcap",
 
 	py_modules=["namcap"],
 	packages = find_packages(),
-	scripts=["namcap", 'parsepkgbuild'],
+	scripts=["bin/namcap", 'bin/parsepkgbuild'],
 	test_suite = "Namcap.tests",
 	data_files=DATAFILES)
 
